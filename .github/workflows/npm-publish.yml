@@ -21,10 +21,17 @@ jobs:
       - run: git config --local user.name ""
       - run: git config --local user.email ""
       - name: Deploy to Heroku
-        env:
-         HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
-        if: github.ref == 'refs/heads/master'
-        run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/facturacion-frontend-dev.git origin/master:master
-        
+        uses: AkhileshNS/heroku-deploy@v3.0.5
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "facturacion-frontend-dev" #Must be unique in Heroku
+          heroku_email: "javier01123@gmail.com"
+          buildpack: "" #OPTIONAL
+          branch: "mater" #OPTIONAL and DEFAULT - 'HEAD' (a.k.a your current branch)
+          dontuseforce: false #OPTIONAL and DEFAULT - false
+          usedocker: false #OPTIONAL and DEFAULT - false
+          appdir: "" #OPTIONAL and DEFAULT - "". This is useful if the api you're deploying is in a subfolder
+          docker_heroku_process_type: "" #OPTIONAL and DEFAULT - "web"
+               
             
 
