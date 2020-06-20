@@ -3,7 +3,10 @@
 
 name: Publish to Heroku
 
-on: [push]
+on:
+   push:
+      branches: 
+         - master
    
 
 jobs:
@@ -25,7 +28,7 @@ jobs:
           heroku_app_name: "facturacion-frontend-dev" #Must be unique in Heroku
           heroku_email: "javier01123@gmail.com"
           buildpack: "" #OPTIONAL
-          branch: "mater" #OPTIONAL and DEFAULT - 'HEAD' (a.k.a your current branch)
+          branch: "master" #OPTIONAL and DEFAULT - 'HEAD' (a.k.a your current branch)
           dontuseforce: false #OPTIONAL and DEFAULT - false
           usedocker: false #OPTIONAL and DEFAULT - false
           appdir: "" #OPTIONAL and DEFAULT - "". This is useful if the api you're deploying is in a subfolder
