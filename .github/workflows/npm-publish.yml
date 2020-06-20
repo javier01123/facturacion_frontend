@@ -17,9 +17,7 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
-      - run: npm test
-      - run: git config --local user.name ""
-      - run: git config --local user.email ""
+      - run: npm test 
       - name: Deploy to Heroku
         uses: AkhileshNS/heroku-deploy@v3.0.5
         with:
