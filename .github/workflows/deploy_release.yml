@@ -25,7 +25,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "facturacion-frontend-dev" #Must be unique in Heroku
           heroku_email: "javier01123@gmail.com"
-          buildpack: "" #OPTIONAL
+          buildpack: "mars/create-react-app" #OPTIONAL
           branch: "" #OPTIONAL and DEFAULT - 'HEAD' (a.k.a your current branch)
           dontuseforce: false #OPTIONAL and DEFAULT - false
           usedocker: false #OPTIONAL and DEFAULT - false
