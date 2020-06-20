@@ -18,6 +18,7 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm test
+      - run: git config --local user.name ""
       - name: Deploy to Heroku
         env:
          HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
