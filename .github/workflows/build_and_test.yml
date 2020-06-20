@@ -1,7 +1,7 @@
 # This workflow will build the app , run tests and then publish to heroku.
 
 
-name: Publish to Heroku
+name: Buid and test
 
 on: [push]
    
