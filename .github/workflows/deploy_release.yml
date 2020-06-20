@@ -3,9 +3,7 @@
 
 name: deploy release
 
-on:
-  release:
-    types: [created]
+on: [push]
 
 jobs:
   publish-to-heroku:
