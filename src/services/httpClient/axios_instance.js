@@ -1,7 +1,8 @@
 import axios from "axios";
+import { config } from "../../consts.js";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api/",
+  baseURL: config.API_URL,
   withCredentials: true,
 });
 
