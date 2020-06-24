@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout, Menu, Breadcrumb, Select } from "antd";
 import { Route, Switch } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import ErrorBoundary from "../../components/ErrorHandlers/ErrorBoundary/ErrorBoundary";
 import CatalogoEmpresas from "../../domain/Empresa/CatalogoEmpresas";
 import CreateEmpresa from "../../domain/Empresa/CreateEmpresa";
@@ -16,7 +16,7 @@ import CreateCliente from "../../domain/Cliente/CreateCliente";
 import EditCliente from "../../domain/Cliente/EditCliente";
 
 import { useDispatch, useSelector } from "react-redux";
-import * as actions from "../../store/actionCreators";
+import * as actionCreators from "../../store/actionCreators";
 import axios_instance from "../../services/httpClient/axios_instance";
 // import { NodeExpandOutlined } from "@ant-design/icons";
 
@@ -27,26 +27,31 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const handleEmpresaChanged = (value) => {
-    dispatch(actions.empresaSelectedChanged(value));
+    dispatch(actionCreators.empresaSelectedChanged(value));
   };
 
   const handleSucursalChanged = (value) => {
-    dispatch(actions.sucursalSelectedChanged(value));
+    dispatch(actionCreators.sucursalSelectedChanged(value));
   };
 
   const empresas = useSelector((store) => store.empresas);
   const sucursales = useSelector((store) => store.sucursales);
   const empresaActualId = useSelector((store) => store.empresaActualId);
   const sucursalActualId = useSelector((store) => store.sucursalActualId);
+  const isAuthenticated = useSelector((store) => store.isAuthenticated);
+
+  if (isAuthenticated !== true) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <Layout
       className="layout"
-      style={{ padding: 0, margin: 0, flex: "none !important" }}
+       style={{ padding: 0, margin: 0, flex: "none !important",width:'100%'}}
     >
       <Header>
-        <div className="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
+        {/* <div className="logo" /> */}
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}  >
           <Menu.Item key="1">
             <Link to="/">Home</Link>
           </Menu.Item>
@@ -101,7 +106,7 @@ const Home = () => {
             <div
               onClick={() => {
                 axios_instance.get("usuario/logout").then((res) => {
-                  window.location.href = "/login";
+                  dispatch(actionCreators.logout());
                 });
               }}
             >

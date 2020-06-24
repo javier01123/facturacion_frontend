@@ -28,11 +28,17 @@ const reducer = (state = initialState, action) => {
         sucursales: action.payload.sucursales,
         empresaActualId: action.payload.empresaActualId,
         sucursalActualId: action.payload.sucursalActualId,
+        isAuthenticated: true,
       };
-      case actionTypes.SUCURSAL_CHANGED:
+    case actionTypes.SUCURSAL_CHANGED:
       return {
         ...state,
         sucursalActualId: action.payload.sucursalId,
+      };
+    case actionTypes.LOGOUT:
+      return {
+        ...state,
+        isAuthenticated: false,
       };
     default:
       return state;

@@ -11,7 +11,7 @@
 
 .flex-item{
     width: 400px;
-    /* height: 250px; */
+    max-width: 90%;
     background-color:whitesmoke;
     padding: 0px 20px;
     border-radius: 5px;

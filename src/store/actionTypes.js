@@ -7,4 +7,5 @@ export const RELOAD_EMPRESAS_INIT = "RELOAD_EMPRESAS_INIT";
 export const EMPRESAS_RELOADED = "EMPRESAS_RELOADED";
 export const LOGIN_INIT = "LOGIN_INIT";
 export const LOGGED_IN = "LOGGED_IN";
+export const LOGOUT = "LOGOUT";
 

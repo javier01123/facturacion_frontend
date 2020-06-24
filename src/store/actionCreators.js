@@ -46,3 +46,9 @@ export const loggedIn = (datos) => {
     payload: datos,
   };
 };
+
+export const logout=()=>{
+  return{
+    type: actionTypes.LOGOUT    
+  }
+}
