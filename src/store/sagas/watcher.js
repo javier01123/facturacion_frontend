@@ -1,5 +1,4 @@
 import { takeEvery } from "redux-saga/effects";
-import { reloadEmpresasSaga } from "./reloadEmpresas";
 import {loginSaga} from "./loginSaga";
 import {empresaChangedSaga} from "./empresaChangedSaga";
 import * as actionTypes from "../actionTypes";

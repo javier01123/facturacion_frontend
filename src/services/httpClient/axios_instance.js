@@ -25,7 +25,7 @@ instance.interceptors.response.use(
   (response_error) => {
     console.log({ response_error });
 
-    if (response_error.response && response_error.response.status == 401)
+    if (response_error.response && response_error.response.status === 401)
       window.location.href = "/login";
 
     return Promise.reject(response_error);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Layout, Menu, Breadcrumb, Select } from "antd";
 import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ import EditCliente from "../../domain/Cliente/EditCliente";
 
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actionCreators";
+import axios_instance from "../../services/httpClient/axios_instance";
 // import { NodeExpandOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -99,7 +100,9 @@ const Home = () => {
           <Menu.Item key="8" style={{ float: "right" }}>
             <div
               onClick={() => {
-                window.location.href = "/login";
+                axios_instance.get("usuario/logout").then((res) => {
+                  window.location.href = "/login";
+                });
               }}
             >
               Logout

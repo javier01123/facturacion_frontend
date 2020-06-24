@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import axios_instance from "./../../services/httpClient/axios_instance";
 import { Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as actions from "../../store/actionCreators";
-import { useHistory } from "react-router-dom";
 import "./PantallaLogin.css";
 
 const PantallaLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
-  const history = useHistory();
+ 
 
   const onFinish = (values) => {
     setIsSubmitting(true);
@@ -21,7 +20,7 @@ const PantallaLogin = () => {
       })
       .then((response) => {
          dispatch(actions.loginInit());
-        history.push("/");
+        // history.push("/");
       })
       .catch((err) => {
         console.log({ err });

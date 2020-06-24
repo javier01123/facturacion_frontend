@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import axios_instance from "../../services/httpClient/axios_instance";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
-import { Form, Input, Button, Card, Row, Col } from "antd";
+import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 
 const layout = {
@@ -45,7 +45,7 @@ export default function CreateEmpresa() {
       })
       .catch((error) => {
         const response = error.response;
-        if (response && response.status == 400) {
+        if (response && response.status === 400) {
           const errorObject = response.data.errors;
           setValidationErrors(errorObject);
         } else {

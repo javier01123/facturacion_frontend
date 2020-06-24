@@ -40,8 +40,6 @@ export default function EditSucursal() {
   let history = useHistory();
   const sucursalId = id;
 
-  useEffect((sucursalId) => loadData(sucursalId), []);
-
   const loadData = () => {
     axios_instance
       .get("/sucursal/" + sucursalId)
@@ -54,6 +52,8 @@ export default function EditSucursal() {
       })
       .finally(() => setIsLoading(false));
   };
+
+  useEffect((sucursalId) => loadData(sucursalId), []);
 
   if (isLoading) {
     return <CustomSpinner />;
@@ -76,7 +76,7 @@ export default function EditSucursal() {
       })
       .catch((error) => {
         const response = error.response;
-        if (response && response.status == 400) {
+        if (response && response.status === 400) {
           const errorObject = response.data.errors;
           console.log({ errorObject });
           setValidationErrors(errorObject);

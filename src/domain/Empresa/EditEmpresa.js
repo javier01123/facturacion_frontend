@@ -4,7 +4,7 @@ import axios_instance from "../../services/httpClient/axios_instance";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
-import { Form, Input, Button, Card, Row, Col } from "antd";
+import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 
 const layout = {
@@ -70,7 +70,7 @@ export default function EditEmpresa() {
       })
       .catch((error) => {
         const response = error.response;
-        if (response && response.status == 400) {
+        if (response && response.status === 400) {
           const errorObject = response.data.errors;
           console.log({ errorObject });
           setValidationErrors(errorObject);

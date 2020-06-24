@@ -52,7 +52,7 @@ export default function CreatCliente() {
       })
       .catch((error) => {
         const response = error.response;
-        if (response && response.status == 400) {
+        if (response && response.status === 400) {
           const errorObject = response.data.errors;
           setValidationErrors(errorObject);
         } else {
