@@ -1,41 +1,22 @@
 import React, { useState, useEffect, Fragment } from "react";
 import axios_instance from "../../services/httpClient/axios_instance";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
-import { Table, Button, Space, Input, Row, Col } from "antd";
+import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-
-function createColumn(dataIndex, title) {
-  return {
-    key: dataIndex,
-    dataIndex,
-    title,
-    defaultSortOrder: "ascend",
-    sortDirections: ["descend", "ascend"],
-    sorter: (a, b) => a[dataIndex].localeCompare(b[dataIndex]),
-  };
-}
+import {
+  createColumn,
+  createEditarColumn,
+  search,
+} from "../../utilities/tableUtils";
 
 const columns = [
-  createColumn("razonSocial", "Razón social"),
+  createColumn("razonSocial", "Razón social", { responsive: ["md"] }),
   createColumn("nombreComercial", "Nombre comercial"),
   createColumn("rfc", "RFC"),
+  createEditarColumn("Editar", "Editar", "/empresas/edit/"),
 ];
-
-const actionsColumn = {
-  title: "Acción",
-  key: "action",
-  render: (text, record) => {
-    return (
-      <Space size="small">
-        <Link to={`/empresas/edit/${record.id}`}>Editar</Link>
-      </Space>
-    );
-  },
-};
-
-columns.push(actionsColumn);
 
 export default function CatalogoEmpresas() {
   const [empresas, setEmpresas] = useState(null);
@@ -43,7 +24,6 @@ export default function CatalogoEmpresas() {
   const [filteredData, setFilteredData] = useState(null);
 
   let history = useHistory();
-  let serachDelay;
 
   const getEmpresas = () => {
     axios_instance
@@ -65,25 +45,6 @@ export default function CatalogoEmpresas() {
 
   const addEmpresaHandler = () => {
     history.push("/empresas/create");
-  };
-
-  const search = (value) => {
-    if (serachDelay) {
-      clearTimeout(serachDelay);
-      serachDelay = null;
-    }
-
-    const executeSearch = () => {
-      const data = empresas.filter((e) =>
-        Object.keys(e).some((k) =>
-          String(e[k]).toLowerCase().includes(value.toLowerCase())
-        )
-      );
-
-      setFilteredData(data);
-    };
-
-    serachDelay = setTimeout(executeSearch, 300);
   };
 
   useEffect(getEmpresas, []);
@@ -116,8 +77,10 @@ export default function CatalogoEmpresas() {
             pull={10}
             placeholder="Buscar..."
             enterButton
-            onSearch={search}
-            onChange={(e) => search(e.target.value)}
+            // onSearch={(value) => {
+            //   search(value, empresas, setFilteredData);
+            // }}
+            onChange={(e) => search(e.target.value, empresas, setFilteredData)}
           />
         </Col>
       </Row>

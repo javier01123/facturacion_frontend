@@ -1,41 +1,22 @@
 import React, { useState, useEffect, Fragment } from "react";
 import axios_instance from "../../services/httpClient/axios_instance";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
-import { Table, Button, Space, Input, Row, Col } from "antd";
+import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-
-function createColumn(dataIndex, title) {
-  return {
-    key: dataIndex,
-    dataIndex,
-    title,
-    defaultSortOrder: "ascend",
-    sortDirections: ["descend", "ascend"],
-    sorter: (a, b) => a[dataIndex].localeCompare(b[dataIndex]),
-  };
-}
+import {
+  createColumn,
+  createEditarColumn,
+  search,
+} from "../../utilities/tableUtils";
 
 const columns = [
   createColumn("razonSocial", "Razón social"),
   createColumn("rfc", "RFC"),
+  createEditarColumn("Editar", "editar", "/clientes/edit/"),
 ];
-
-const actionsColumn = {
-  title: "Acción",
-  key: "action",
-  render: (text, record) => {
-    return (
-      <Space size="small">
-        <Link to={`/clientes/edit/${record.id}`}>Editar</Link>
-      </Space>
-    );
-  },
-};
-
-columns.push(actionsColumn);
 
 export default function CatalogoClientes() {
   const [clientes, setClientes] = useState(null);
@@ -44,7 +25,6 @@ export default function CatalogoClientes() {
 
   const empresaActualId = useSelector((state) => state.empresaActualId);
   let history = useHistory();
-  let serachDelay;
 
   const getClientes = () => {
     axios_instance
@@ -66,25 +46,6 @@ export default function CatalogoClientes() {
 
   const addClienteHandler = () => {
     history.push("/clientes/create");
-  };
-
-  const search = (value) => {
-    if (serachDelay) {
-      clearTimeout(serachDelay);
-      serachDelay = null;
-    }
-
-    const executeSearch = () => {
-      const data = clientes.filter((e) =>
-        Object.keys(e).some((k) =>
-          String(e[k]).toLowerCase().includes(value.toLowerCase())
-        )
-      );
-
-      setFilteredData(data);
-    };
-
-    serachDelay = setTimeout(executeSearch, 300);
   };
 
   useEffect(getClientes, []);
@@ -117,8 +78,7 @@ export default function CatalogoClientes() {
             pull={10}
             placeholder="Buscar..."
             enterButton
-            onSearch={search}
-            onChange={(e) => search(e.target.value)}
+            onChange={(e) => search(e.target.value, clientes, setFilteredData)}
           />
         </Col>
       </Row>
