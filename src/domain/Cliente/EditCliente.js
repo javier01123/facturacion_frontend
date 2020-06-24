@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import axios_instance from "../../services/httpClient/axios_instance";
+import ClienteRepository from "./ClienteRepository";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
+import * as patterns from "../../utilities/regexPatterns";
 
 const layout = {
   labelCol: {
@@ -22,7 +23,7 @@ const tailLayout = {
     span: 19,
   },
 };
- 
+
 export default function EditCliente() {
   const [clienteState, setClienteState] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -33,14 +34,14 @@ export default function EditCliente() {
   let { id } = useParams();
   let history = useHistory();
   const clienteId = id;
+  const clienteRepository = new ClienteRepository();
 
   useEffect((clienteId) => loadData(clienteId), []);
 
   const loadData = () => {
-    axios_instance
-      .get("/cliente/" + clienteId)
-      .then((response) => {
-        const cliente = response.data;
+    clienteRepository
+      .getClienteById(clienteId)
+      .then((cliente) => {
         setClienteState(cliente);
       })
       .catch((error) => {
@@ -60,20 +61,17 @@ export default function EditCliente() {
   const initialValues = clienteState;
 
   const onFinishHandler = (values) => {
-    const clienteToPost = { id:  clienteId, ...values };
+    const clienteToPost = { id: clienteId, ...values };
     setIsSubmiting(true);
 
-    axios_instance
-      .put("/cliente", clienteToPost)
+    clienteRepository
+      .updateCliente(clienteToPost)
       .then((response) => {
         history.push("/clientes");
       })
       .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 400) {
-          const errorObject = response.data.errors;
-          console.log({ errorObject });
-          setValidationErrors(errorObject);
+        if (error.isValidationError === true) {
+          setValidationErrors(error.validationErrors);
         } else {
           alert("Error al guardar los cambios, intente de nuevo");
         }
@@ -82,78 +80,68 @@ export default function EditCliente() {
   };
   return (
     <React.Fragment>
-    <Form
-      {...layout}
-      name="basic"
-      size="small"
-      initialValues={initialValues}
-      onFinish={onFinishHandler}
-    >
-      <Card
-        style={{ backgroundColor: "white" }}
-        title="Datos fiscales"
-        bordered={true}
+      <Form
+        {...layout}
+        name="basic"
+        size="small"
+        initialValues={initialValues}
+        onFinish={onFinishHandler}
       >
-        <Form.Item
-          label="Razón Social"
-          name="razonSocial"
-          rules={[
-            {
-              required: true,
-              whitespace: true,
-              message: "obligatorio",
-            },
-          ]}
+        <Card
+          style={{ backgroundColor: "white" }}
+          title="Datos fiscales"
+          bordered={true}
         >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="RFC"
-          name="rfc"
-          rules={[
-            {
-              required: true,
-              message: "obligatorio",
-            },
-            {
-              pattern:
-                "^[A-Z&Ñ]{3,4}[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{2}[0-9A]$",
-              message: "formato inválido",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-
-        
-        <Form.Item {...tailLayout}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isLoading || isSubmiting}
+          <Form.Item
+            label="Razón Social"
+            name="razonSocial"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: "obligatorio",
+              },
+            ]}
           >
-            Guardar Cambios
-          </Button>
-        </Form.Item>
-      
-      </Card>
+            <Input />
+          </Form.Item>
 
-      {validationErrors ? (
-        <ValidationErrors validationErrors={validationErrors} />
-      ) : null}
+          <Form.Item
+            label="RFC"
+            name="rfc"
+            rules={[
+              {
+                required: true,
+                message: "obligatorio",
+              },
+              {
+                pattern: patterns.RFC,
+                message: "formato inválido",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-     
-    </Form>
+          <Form.Item {...tailLayout}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="middle"
+              icon={<SaveOutlined />}
+              disabled={isLoading || isSubmiting}
+            >
+              Guardar Cambios
+            </Button>
+          </Form.Item>
+        </Card>
 
-    <Card
-    title="Sucursales"
-    >
+        {validationErrors ? (
+          <ValidationErrors validationErrors={validationErrors} />
+        ) : null}
+      </Form>
 
-    </Card>
-   </React.Fragment>
+      <Card title="Sucursales"></Card>
+    </React.Fragment>
   );
 }

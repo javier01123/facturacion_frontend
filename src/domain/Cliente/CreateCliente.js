@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import axios_instance from "../../services/httpClient/axios_instance";
+import ClienteRepository from "./ClienteRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card, Row, Col } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
-import {useSelector} from 'react-redux';
+import { useSelector } from "react-redux";
+import * as patterns from "../../utilities/regexPatterns";
 
 const layout = {
   labelCol: {
@@ -34,7 +35,8 @@ export default function CreatCliente() {
 
   let history = useHistory();
   const initialValues = {};
-  const empresaActualId = useSelector(state => state.empresaActualId);
+  const empresaActualId = useSelector((state) => state.empresaActualId);
+  const clienteRepository = new ClienteRepository();
 
   const onFinish = (values) => {
     const clienteToPost = {
@@ -45,16 +47,14 @@ export default function CreatCliente() {
 
     setIsSubmiting(true);
 
-    axios_instance
-      .post("/cliente", clienteToPost)
+    clienteRepository
+      .createCliente(clienteToPost)
       .then((response) => {
         history.push("/clientes");
       })
       .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 400) {
-          const errorObject = response.data.errors;
-          setValidationErrors(errorObject);
+        if (error.isValidationError === true) {
+          setValidationErrors(error.validationErrors);
         } else {
           alert("Error al guardar los cambios, intente de nuevo");
         }
@@ -88,7 +88,7 @@ export default function CreatCliente() {
         >
           <Input />
         </Form.Item>
-        
+
         <Form.Item
           label="RFC"
           name="rfc"
@@ -98,8 +98,7 @@ export default function CreatCliente() {
               message: "obligatorio",
             },
             {
-              pattern:
-                "^[A-Z&Ñ]{3,4}[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{2}[0-9A]$",
+              pattern: patterns.RFC,
               message: "formato inválido",
             },
           ]}

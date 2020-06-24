@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import axios_instance from "../../services/httpClient/axios_instance";
+import ClienteRepository from "./ClienteRepository";
 import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
@@ -25,19 +25,13 @@ export default function CatalogoClientes() {
 
   const empresaActualId = useSelector((state) => state.empresaActualId);
   let history = useHistory();
+  const clienteRepository = new ClienteRepository();
 
   const getClientes = () => {
-    axios_instance
-      .get("/cliente/?EmpresaId=" + empresaActualId)
-      .then((response) => {
-        const data = response.data;
-        const dataWithKeys = data.map((e) => {
-          return {
-            ...e,
-            key: e.id,
-          };
-        });
-        setClientes(dataWithKeys);
+    clienteRepository
+      .getClientes(empresaActualId)
+      .then((clientes) => {
+        setClientes(clientes);
       })
       .catch((error) => {
         setNetworkError(error);
