@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import axios_instance from "../../services/httpClient/axios_instance";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
+import EmpresaRepository from "./EmpresaRepository";
 
 const layout = {
   labelCol: {
@@ -20,8 +20,6 @@ const tailLayout = {
     span: 19,
   },
 };
- 
-
 
 export default function CreateEmpresa() {
   const [validationErrors, setValidationErrors] = useState(null);
@@ -29,6 +27,7 @@ export default function CreateEmpresa() {
 
   let history = useHistory();
   const initialValues = {};
+  const empresaRepository = new EmpresaRepository();
 
   const onFinish = (values) => {
     const empresaToPost = {
@@ -38,16 +37,14 @@ export default function CreateEmpresa() {
 
     setIsSubmiting(true);
 
-    axios_instance
-      .post("/empresa", empresaToPost)
+    empresaRepository
+      .createEmpresa(empresaToPost)
       .then((response) => {
         history.push("/empresas");
       })
-      .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 400) {
-          const errorObject = response.data.errors;
-          setValidationErrors(errorObject);
+      .catch((formatedError) => {
+        if (formatedError.isValidationError === true) {
+          setValidationErrors(formatedError.validationErrors);
         } else {
           alert("Error al guardar los cambios, intente de nuevo");
         }
@@ -114,7 +111,6 @@ export default function CreateEmpresa() {
         </Form.Item>
       </Card>
 
-       
       {validationErrors ? (
         <ValidationErrors validationErrors={validationErrors} />
       ) : null}

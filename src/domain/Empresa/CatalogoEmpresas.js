@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
-import axios_instance from "../../services/httpClient/axios_instance";
 import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import EmpresaRepository from "./EmpresaRepository";
 import {
   createColumn,
   createEditarColumn,
@@ -24,19 +24,13 @@ export default function CatalogoEmpresas() {
   const [filteredData, setFilteredData] = useState(null);
 
   let history = useHistory();
+  const empresaRepository = new EmpresaRepository();
 
   const getEmpresas = () => {
-    axios_instance
-      .get("/empresa")
-      .then((response) => {
-        const data = response.data;
-        const dataWithKeys = data.map((e) => {
-          return {
-            ...e,
-            key: e.id,
-          };
-        });
-        setEmpresas(dataWithKeys);
+    empresaRepository
+      .getEmpresas()
+      .then((data) => {
+        setEmpresas(data);
       })
       .catch((error) => {
         setNetworkError(error);

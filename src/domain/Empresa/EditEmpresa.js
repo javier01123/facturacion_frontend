@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import axios_instance from "../../services/httpClient/axios_instance";
+import EmpresaRepository from "./EmpresaRepository";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
@@ -33,14 +33,14 @@ export default function EditEmpresa() {
   let { id } = useParams();
   let history = useHistory();
   const empresaId = id;
+  const empresaRepository = new EmpresaRepository();
 
   useEffect((empresaId) => loadData(empresaId), []);
 
   const loadData = () => {
-    axios_instance
-      .get("/empresa/" + empresaId)
-      .then((response) => {
-        const empresa = response.data;
+    empresaRepository
+      .getEmpresaById(empresaId)
+      .then((empresa) => {
         setEmpresaState(empresa);
       })
       .catch((error) => {
@@ -60,20 +60,17 @@ export default function EditEmpresa() {
   const initialValues = empresaState;
 
   const onFinishHandler = (values) => {
-    const empresaToPost = { id: empresaId, ...values };
+    const empresaToUpdate = { id: empresaId, ...values };
     setIsSubmiting(true);
 
-    axios_instance
-      .put("/empresa", empresaToPost)
+    empresaRepository
+      .updateEmpresa(empresaToUpdate)
       .then((response) => {
         history.push("/empresas");
       })
-      .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 400) {
-          const errorObject = response.data.errors;
-          console.log({ errorObject });
-          setValidationErrors(errorObject);
+      .catch((formatedError) => {
+        if (formatedError.isValidationError === true) {
+          setValidationErrors(formatedError.validationErrors);
         } else {
           alert("Error al guardar los cambios, intente de nuevo");
         }
