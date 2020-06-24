@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import SucursalRepository from "./SucursalRepository";
 import axios_instance from "../../services/httpClient/axios_instance";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card, Row, Col } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
-import {useSelector} from 'react-redux';
+import { useSelector } from "react-redux";
 
 const layout = {
   labelCol: {
@@ -34,27 +35,26 @@ export default function CreateSucursal() {
 
   let history = useHistory();
   const initialValues = {};
-  const empresaActualId = useSelector(state => state.empresaActualId);
+  const empresaActualId = useSelector((state) => state.empresaActualId);
+  const sucursalRepository = new SucursalRepository();
 
   const onFinish = (values) => {
     const sucursalToPost = {
       Id: uuidv4(),
-      EmpresaId:empresaActualId,
+      EmpresaId: empresaActualId,
       ...values,
     };
 
     setIsSubmiting(true);
 
-    axios_instance
-      .post("/sucursal", sucursalToPost)
+    sucursalRepository
+      .createSucursal(sucursalToPost)
       .then((response) => {
         history.push("/sucursales");
       })
-      .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 400) {
-          const errorObject = response.data.errors;
-          setValidationErrors(errorObject);
+      .catch((formatedError) => {
+        if (formatedError.isValidationError === true) {
+          setValidationErrors(formatedError.validationErrors);
         } else {
           alert("Error al guardar los cambios, intente de nuevo");
         }

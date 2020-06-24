@@ -1,14 +1,14 @@
 import axios_instance from "../../services/httpClient/axios_instance";
 import { formatCreateAndUpdateErrors } from "../../utilities/repositoryUtils";
 
-export default class EmpresaRepository {
-  getEmpresaById(empresaId) {
+export default class SucursalRepository {
+  getSucursalById(sucursalId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/empresa/" + empresaId)
+        .get("/sucursal/" + sucursalId)
         .then((response) => {
-          const empresa = response.data;
-          resolve(empresa);
+          const sucursal = response.data;
+          resolve(sucursal);
         })
         .catch((error) => {
           reject(error);
@@ -16,19 +16,19 @@ export default class EmpresaRepository {
     });
   }
 
-  getEmpresas() {
+  getSucursales(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/empresa")
+        .get("/sucursal/?EmpresaId=" + empresaId)
         .then((response) => {
-          const empresas = response.data;
-          const empresasWithKeys = empresas.map((e) => {
+          const sucursales = response.data;
+          const sucursalesWithKeys = sucursales.map((e) => {
             return {
               ...e,
               key: e.id,
             };
           });
-          resolve(empresasWithKeys);
+          resolve(sucursalesWithKeys);
         })
         .catch((error) => {
           reject(error);
@@ -36,10 +36,10 @@ export default class EmpresaRepository {
     });
   }
 
-  createEmpresa(empresaToPost) {
+  createSucursal(sucursal) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post("/empresa", empresaToPost)
+        .post("/sucursal", sucursal)
         .then((response) => {
           resolve(response);
         })
@@ -49,10 +49,10 @@ export default class EmpresaRepository {
     });
   }
 
-  updateEmpresa(empresa) {
+  updateSucursal(sucursal) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .put("/empresa", empresa)
+        .put("/sucursal", sucursal)
         .then((response) => {
           resolve(response);
         })

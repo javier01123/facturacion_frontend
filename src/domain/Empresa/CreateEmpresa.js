@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import EmpresaRepository from "./EmpresaRepository";
+import * as patterns from "../../utilities/regexPatterns";
 
 const layout = {
   labelCol: {
@@ -101,8 +102,7 @@ export default function CreateEmpresa() {
               message: "obligatorio",
             },
             {
-              pattern:
-                "^[A-Z&Ñ]{3,4}[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{2}[0-9A]$",
+              pattern:patterns.RFC,                
               message: "formato inválido",
             },
           ]}

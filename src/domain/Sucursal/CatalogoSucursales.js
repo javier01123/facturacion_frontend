@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
-import axios_instance from "../../services/httpClient/axios_instance";
 import { useHistory } from "react-router-dom";
+import SucursalRepository from "./SucursalRepository";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import { Table, Button, Input, Row, Col } from "antd";
@@ -24,19 +24,12 @@ export default function CatalogoSucursales() {
 
   let history = useHistory();
   const empresaActualId = useSelector((state) => state.empresaActualId);
+  const sucursalRepository = new SucursalRepository();
 
   const getSucursales = () => {
-    axios_instance
-      .get("/sucursal/?EmpresaId=" + empresaActualId)
-      .then((response) => {
-        const data = response.data;
-        const dataWithKeys = data.map((e) => {
-          return {
-            ...e,
-            key: e.id,
-          };
-        });
-        setSucursales(dataWithKeys);
+    sucursalRepository.getSucursales(empresaActualId)      
+      .then((sucursales) => {
+        setSucursales(sucursales);
       })
       .catch((error) => {
         setNetworkError(error);
@@ -76,7 +69,7 @@ export default function CatalogoSucursales() {
             span={14}
             pull={10}
             placeholder="Buscar..."
-            enterButton           
+            enterButton
             onChange={(e) =>
               search(e.target.value, sucursales, setFilteredData)
             }

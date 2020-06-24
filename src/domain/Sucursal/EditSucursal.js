@@ -6,6 +6,7 @@ import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkErro
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { Form, Input, Button, Card, Row, Col } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
+import SucursalRepository from "./SucursalRepository";
 
 const layout = {
   labelCol: {
@@ -39,6 +40,7 @@ export default function EditSucursal() {
   let { id } = useParams();
   let history = useHistory();
   const sucursalId = id;
+  const sucursalRepository = new SucursalRepository();
 
   const loadData = () => {
     axios_instance
@@ -69,23 +71,21 @@ export default function EditSucursal() {
     const sucursalToPost = { id: sucursalId, ...values };
     setIsSubmiting(true);
 
-    axios_instance
-      .put("/sucursal", sucursalToPost)
+    sucursalRepository
+      .updateSucursal(sucursalToPost)
       .then((response) => {
         history.push("/sucursales");
       })
-      .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 400) {
-          const errorObject = response.data.errors;
-          console.log({ errorObject });
-          setValidationErrors(errorObject);
+      .catch((formatedError) => {
+        if (formatedError.isValidationError === true) {
+          setValidationErrors(formatedError.validationErrors);
         } else {
           alert("Error al guardar los cambios, intente de nuevo");
         }
       })
       .finally(() => setIsSubmiting(false));
   };
+
   return (
     <Form
       {...layout}
@@ -112,7 +112,6 @@ export default function EditSucursal() {
         >
           <Input />
         </Form.Item>
-        
       </Card>
 
       <Card
