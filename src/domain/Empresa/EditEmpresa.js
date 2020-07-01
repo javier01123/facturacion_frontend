@@ -95,11 +95,11 @@ export default function EditEmpresa() {
           label="Razón Social"
           name="razonSocial"
           rules={[
-            {
-              required: true,
-              whitespace: true,
-              message: "obligatorio",
-            },
+            // {
+            //   required: true,
+            //   whitespace: true,
+            //   message: "obligatorio",
+            // },
           ]}
         >
           <Input />

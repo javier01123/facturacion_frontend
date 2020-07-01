@@ -14,7 +14,7 @@ export default function ValidationErrors(props) {
           <ul>
           {Object.keys(errorObject).map((property) => {
             return errorObject[property].map((mensaje) => {
-              return <li>{mensaje}</li>;
+              return <li key={mensaje}>{mensaje}</li>;
             });
           })}
         </ul>

@@ -4,7 +4,7 @@ export const formatCreateAndUpdateErrors = (axiosError) => {
 
   if (response && response.status === 400) {
     formatedError.isValidationError = true;
-    formatedError.validationErrors = response.data.errors;
+    formatedError.validationErrors = response.data;
   }
 
   return formatedError;
