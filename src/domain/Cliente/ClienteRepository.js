@@ -1,5 +1,4 @@
 import axios_instance from "../../services/httpClient/axios_instance";
-import { formatCreateAndUpdateErrors } from "../../utilities/repositoryUtils";
 
 export default class ClienteRepository {
   getClienteById(clienteId) {
@@ -44,7 +43,7 @@ export default class ClienteRepository {
           resolve(response);
         })
         .catch((error) => {
-          reject(formatCreateAndUpdateErrors(error));
+          reject(error);
         });
     });
   }
@@ -57,7 +56,7 @@ export default class ClienteRepository {
           resolve(response);
         })
         .catch((error) => {
-          reject(formatCreateAndUpdateErrors(error));
+          reject(error);
         });
     });
   }

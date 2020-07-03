@@ -6,6 +6,7 @@ import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import EmpresaRepository from "./EmpresaRepository";
 import * as patterns from "../../utilities/regexPatterns";
+import { useToasts } from "react-toast-notifications";
 
 const layout = {
   labelCol: {
@@ -22,13 +23,14 @@ const tailLayout = {
   },
 };
 
-export default function CreateEmpresa() {
+const CreateEmpresa = () => {
   const [validationErrors, setValidationErrors] = useState(null);
   const [isSubmiting, setIsSubmiting] = useState(false);
 
   let history = useHistory();
   const initialValues = {};
   const empresaRepository = new EmpresaRepository();
+  const { addToast } = useToasts();
 
   const onFinish = (values) => {
     const empresaToPost = {
@@ -43,14 +45,33 @@ export default function CreateEmpresa() {
       .then((response) => {
         history.push("/empresas");
       })
-      .catch((formatedError) => {
-        if (formatedError.isValidationError === true) {
-          setValidationErrors(formatedError.validationErrors);
+      .catch((error) => {
+        if (error.isValidationError === true) {
+          setValidationErrors(error.validationErrors);
         } else {
-          alert("Error al guardar los cambios, intente de nuevo");
+          addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
       .finally(() => setIsSubmiting(false));
+  };
+
+  const isRfcDisponibleHandler = async (rule, value, callback) => {
+
+    if(!value){
+      return;
+    }
+
+    if (value.length < 12 || value.length > 13) {
+      return;
+    }
+
+    const result = await empresaRepository.isRfcDisponible(value);
+
+    if (result === true) {
+      callback();
+    } else {
+      throw new Error("RFC ya utilizado por otra empresa");
+    }
   };
 
   return (
@@ -79,6 +100,7 @@ export default function CreateEmpresa() {
         >
           <Input />
         </Form.Item>
+
         <Form.Item
           label="Nombre Comercial"
           name="nombreComercial"
@@ -95,15 +117,19 @@ export default function CreateEmpresa() {
 
         <Form.Item
           label="RFC"
-          name="rfc"
+          name="rfc"          
+          normalize={(value) => (value || "").toUpperCase()}
           rules={[
             {
               required: true,
               message: "obligatorio",
             },
             {
-              pattern:patterns.RFC,                
+              pattern: patterns.RFC,
               message: "formato inválido",
+            },
+            {
+              validator: isRfcDisponibleHandler,
             },
           ]}
         >
@@ -130,4 +156,6 @@ export default function CreateEmpresa() {
       </Card>
     </Form>
   );
-}
+};
+
+export default CreateEmpresa;

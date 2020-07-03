@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card, Row, Col } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { useToasts } from "react-toast-notifications";
 
 const layout = {
   labelCol: {
@@ -36,6 +37,7 @@ export default function CreateSucursal() {
   const initialValues = {};
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const sucursalRepository = new SucursalRepository();
+  const { addToast } = useToasts();
 
   const onFinish = (values) => {
     const sucursalToPost = {
@@ -51,11 +53,11 @@ export default function CreateSucursal() {
       .then((response) => {
         history.push("/sucursales");
       })
-      .catch((formatedError) => {
-        if (formatedError.isValidationError === true) {
-          setValidationErrors(formatedError.validationErrors);
+      .catch((error) => {
+        if (error.isValidationError === true) {
+          setValidationErrors(error.validationErrors);
         } else {
-          alert("Error al guardar los cambios, intente de nuevo");
+          addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
       .finally(() => setIsSubmiting(false));

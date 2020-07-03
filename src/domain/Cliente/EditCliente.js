@@ -7,6 +7,7 @@ import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/Val
 import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import * as patterns from "../../utilities/regexPatterns";
+import { useToasts } from "react-toast-notifications";
 
 const layout = {
   labelCol: {
@@ -35,6 +36,7 @@ export default function EditCliente() {
   let history = useHistory();
   const clienteId = id;
   const clienteRepository = new ClienteRepository();
+  const {addToast}= useToasts();
 
   useEffect((clienteId) => loadData(clienteId), []);
 
@@ -73,7 +75,7 @@ export default function EditCliente() {
         if (error.isValidationError === true) {
           setValidationErrors(error.validationErrors);
         } else {
-          alert("Error al guardar los cambios, intente de nuevo");
+          addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
       .finally(() => setIsSubmiting(false));

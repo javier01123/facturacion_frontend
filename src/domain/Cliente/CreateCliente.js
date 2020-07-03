@@ -7,6 +7,7 @@ import { Form, Input, Button, Card, Row, Col } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import * as patterns from "../../utilities/regexPatterns";
+import { useToasts } from "react-toast-notifications";
 
 const layout = {
   labelCol: {
@@ -37,6 +38,7 @@ export default function CreatCliente() {
   const initialValues = {};
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const clienteRepository = new ClienteRepository();
+  const { addToast } = useToasts();
 
   const onFinish = (values) => {
     const clienteToPost = {
@@ -56,7 +58,7 @@ export default function CreatCliente() {
         if (error.isValidationError === true) {
           setValidationErrors(error.validationErrors);
         } else {
-          alert("Error al guardar los cambios, intente de nuevo");
+          addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
       .finally(() => setIsSubmiting(false));

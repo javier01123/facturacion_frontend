@@ -7,6 +7,7 @@ import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/Val
 import { Form, Input, Button, Card } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import * as patterns from "../../utilities/regexPatterns";
+import { useToasts } from "react-toast-notifications";
 
 const layout = {
   labelCol: {
@@ -35,6 +36,7 @@ export default function EditEmpresa() {
   let history = useHistory();
   const empresaId = id;
   const empresaRepository = new EmpresaRepository();
+  const { addToast } = useToasts();
 
   useEffect((empresaId) => loadData(empresaId), []);
 
@@ -69,11 +71,11 @@ export default function EditEmpresa() {
       .then((response) => {
         history.push("/empresas");
       })
-      .catch((formatedError) => {
-        if (formatedError.isValidationError === true) {
-          setValidationErrors(formatedError.validationErrors);
+      .catch((error) => {
+        if (error.isValidationError === true) {
+          setValidationErrors(error.validationErrors);
         } else {
-          alert("Error al guardar los cambios, intente de nuevo");
+          addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
       .finally(() => setIsSubmiting(false));
@@ -94,13 +96,15 @@ export default function EditEmpresa() {
         <Form.Item
           label="Razón Social"
           name="razonSocial"
-          rules={[
-            // {
-            //   required: true,
-            //   whitespace: true,
-            //   message: "obligatorio",
-            // },
-          ]}
+          rules={
+            [
+              {
+                required: true,
+                whitespace: true,
+                message: "obligatorio",
+              },
+            ]
+          }
         >
           <Input />
         </Form.Item>

@@ -1,5 +1,5 @@
 import axios_instance from "../../services/httpClient/axios_instance";
-import { formatCreateAndUpdateErrors } from "../../utilities/repositoryUtils";
+
 
 export default class SucursalRepository {
   getSucursalById(sucursalId) {
@@ -44,7 +44,7 @@ export default class SucursalRepository {
           resolve(response);
         })
         .catch((error) => {
-          reject(formatCreateAndUpdateErrors(error));
+          reject(error);
         });
     });
   }
@@ -57,7 +57,7 @@ export default class SucursalRepository {
           resolve(response);
         })
         .catch((error) => {
-          reject(formatCreateAndUpdateErrors(error));
+          reject(error);
         });
     });
   }

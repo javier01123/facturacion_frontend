@@ -1,11 +1,11 @@
 import axios_instance from "../../services/httpClient/axios_instance";
-import { formatCreateAndUpdateErrors } from "../../utilities/repositoryUtils";
+
 
 export default class EmpresaRepository {
   getEmpresaById(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/empresa/" + empresaId)
+        .get(`/empresa/${empresaId}`)
         .then((response) => {
           const empresa = response.data;
           resolve(empresa);
@@ -44,7 +44,7 @@ export default class EmpresaRepository {
           resolve(response);
         })
         .catch((error) => {
-          reject(formatCreateAndUpdateErrors(error));
+          reject(error);
         });
     });
   }
@@ -57,8 +57,23 @@ export default class EmpresaRepository {
           resolve(response);
         })
         .catch((error) => {
-          reject(formatCreateAndUpdateErrors(error));
+          reject(error);
         });
     });
   }
+
+  isRfcDisponible(rfc){
+    return new Promise((resolve,reject)=>{
+      axios_instance
+        .get(`/empresa/isRfcDisponible/${rfc}`)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+ 
 }

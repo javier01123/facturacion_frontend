@@ -1,5 +1,6 @@
 import axios from "axios";
 import { config } from "../../consts.js";
+import { formatCreateAndUpdateErrors } from "../../utilities/repositoryUtils";
 
 const instance = axios.create({
   baseURL: config.API_URL,
@@ -28,7 +29,9 @@ instance.interceptors.response.use(
     if (response_error.response && response_error.response.status === 401)
       window.location.href = "/login";
 
-    return Promise.reject(response_error);
+    const formattedError = formatCreateAndUpdateErrors(response_error);
+
+    return Promise.reject(formattedError);
   }
 );
 
