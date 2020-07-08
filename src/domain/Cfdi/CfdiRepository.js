@@ -18,7 +18,7 @@ export default class CfdiRepository {
   getCfdis(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/cfdi/?EmpresaId=" + empresaId)
+        .get(`/empresas/${empresaId}/cfdi`)
         .then((response) => {
           const cfdis = response.data;
           const cfdisWithKeys = cfdis.map((e) => {

@@ -16,7 +16,7 @@ const columns = [
   createColumn("razonSocial", "Razón social"),
   createColumn("rfc", "RFC"),
   createColumn("total", "Total"),
-  createEditarColumn("Editar", "editar", "/clientes/edit/"),
+  createEditarColumn("Editar", "editar", "/cfdi/edit/"),
 ];
 
 export default function CatalogoCfdi() {
@@ -26,10 +26,10 @@ export default function CatalogoCfdi() {
 
   const empresaActualId = useSelector((state) => state.empresaActualId);
   let history = useHistory();
-  const CfdiRepository = new CfdiRepository();
+  const cfdiRepository = new CfdiRepository();
 
   const getCfdis = () => {
-    CfdiRepository.getCfdis(empresaActualId)
+    cfdiRepository.getCfdis(empresaActualId)
       .then((cfdis) => {
         setCfdis(cfdis);
       })

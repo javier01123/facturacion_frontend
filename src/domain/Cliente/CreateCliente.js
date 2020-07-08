@@ -30,7 +30,7 @@ const domicilioLayout = {
   },
 };
 
-export default function CreatCliente() {
+export default function CreateCliente() {
   const [validationErrors, setValidationErrors] = useState(null);
   const [isSubmiting, setIsSubmiting] = useState(false);
 

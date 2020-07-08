@@ -18,6 +18,8 @@ import EditCliente from "../../domain/Cliente/EditCliente";
 import { useDispatch, useSelector } from "react-redux";
 import * as actionCreators from "../../store/actionCreators";
 import axios_instance from "../../services/httpClient/axios_instance";
+import CatalogoCfdi from "../../domain/Cfdi/CatalogoCfdi";
+import CreateCfdi from "../../domain/Cfdi/CreateCfdi";
 // import { NodeExpandOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -133,6 +135,8 @@ const Home = () => {
               <Route exact path="/clientes" component={CatalogoClientes} />
               <Route path="/clientes/edit/:id" component={EditCliente} />
               <Route path="/clientes/create" component={CreateCliente} />
+              <Route exact path="/cfdi" component={CatalogoCfdi} />
+              <Route exact path="/cfdi/create" component={CreateCfdi} />
 
               <Route exact path="/">
                 <div>Home</div>
