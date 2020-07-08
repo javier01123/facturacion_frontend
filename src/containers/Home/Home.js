@@ -65,7 +65,7 @@ const Home = () => {
             <Link to="/clientes">Clientes</Link>
           </Menu.Item>
           <Menu.Item key="5">
-            <Link to="/emitir_cfdi">Emitir CFDI</Link>
+            <Link to="/cfdi">CFDI</Link>
           </Menu.Item>
           <Menu.Item key="6" disabled>
             {empresas && (

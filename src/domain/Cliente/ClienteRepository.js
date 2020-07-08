@@ -4,7 +4,7 @@ export default class ClienteRepository {
   getClienteById(clienteId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/cliente/" + clienteId)
+        .get(`/clientes/${clienteId}`)
         .then((response) => {
           const cliente = response.data;
           resolve(cliente);
@@ -18,7 +18,7 @@ export default class ClienteRepository {
   getClientes(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/cliente/?EmpresaId=" + empresaId)
+        .get(`empresas/${empresaId}/clientes`)
         .then((response) => {
           const clientes = response.data;
           const clientesWithKeys = clientes.map((e) => {
@@ -38,7 +38,7 @@ export default class ClienteRepository {
   createCliente(cliente) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post("/cliente", cliente)
+        .post("/clientes", cliente)
         .then((response) => {
           resolve(response);
         })
@@ -51,7 +51,7 @@ export default class ClienteRepository {
   updateCliente(cliente) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .put("/cliente", cliente)
+        .put("/clientes", cliente)
         .then((response) => {
           resolve(response);
         })

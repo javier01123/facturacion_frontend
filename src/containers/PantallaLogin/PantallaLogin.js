@@ -14,7 +14,7 @@ const PantallaLogin = () => {
   const onFinish = (values) => {
     setIsSubmitting(true);
     axios_instance
-      .post("/usuario/authenticate", {
+      .post("/usuarios/authenticate", {
         Email: values.email,
         Password: values.password,
       })

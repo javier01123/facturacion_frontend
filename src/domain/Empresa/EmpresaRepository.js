@@ -5,7 +5,7 @@ export default class EmpresaRepository {
   getEmpresaById(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get(`/empresa/${empresaId}`)
+        .get(`/empresas/${empresaId}`)
         .then((response) => {
           const empresa = response.data;
           resolve(empresa);
@@ -19,7 +19,7 @@ export default class EmpresaRepository {
   getEmpresas() {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get("/empresa")
+        .get("/empresas")
         .then((response) => {
           const empresas = response.data;
           const empresasWithKeys = empresas.map((e) => {
@@ -39,7 +39,7 @@ export default class EmpresaRepository {
   createEmpresa(empresaToPost) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post("/empresa", empresaToPost)
+        .post("/empresas", empresaToPost)
         .then((response) => {
           resolve(response);
         })
@@ -52,7 +52,7 @@ export default class EmpresaRepository {
   updateEmpresa(empresa) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .put("/empresa", empresa)
+        .put("/empresas", empresa)
         .then((response) => {
           resolve(response);
         })
@@ -65,7 +65,7 @@ export default class EmpresaRepository {
   isRfcDisponible(rfc){
     return new Promise((resolve,reject)=>{
       axios_instance
-        .get(`/empresa/isRfcDisponible/${rfc}`)
+        .get(`/empresas/isRfcDisponible/${rfc}`)
         .then((response) => {
           resolve(response.data);
         })

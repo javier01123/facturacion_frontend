@@ -5,12 +5,12 @@ import { put } from "redux-saga/effects";
 
 export function* loginSaga(action) {
   try {
-    const response = yield axios_instance.get("/empresa");
+    const response = yield axios_instance.get("/empresas");
     const empresas = response.data;
     const empresaId = empresas[0].id;
 
     const sucursalesResponse = yield axios_instance.get(
-      "/sucursal/?EmpresaId=" + empresaId
+      `empresas/${empresaId}/sucursales`
     );
     const sucursales = sucursalesResponse.data;
     const sucursalId = sucursales[0].id;

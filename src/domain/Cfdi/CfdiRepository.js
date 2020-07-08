@@ -1,14 +1,13 @@
 import axios_instance from "../../services/httpClient/axios_instance";
 
-
-export default class SucursalRepository {
-  getSucursalById(sucursalId) {
+export default class CfdiRepository {
+  getCfdiById(cfdiId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get(`/sucursales/${sucursalId}`)
+        .get("/cfdi/" + cfdiId)
         .then((response) => {
-          const sucursal = response.data;
-          resolve(sucursal);
+          const cfdi = response.data;
+          resolve(cfdi);
         })
         .catch((error) => {
           reject(error);
@@ -16,19 +15,19 @@ export default class SucursalRepository {
     });
   }
 
-  getSucursales(empresaId) {
+  getCfdis(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get(`empresas/${empresaId}/sucursales/`)
+        .get("/cfdi/?EmpresaId=" + empresaId)
         .then((response) => {
-          const sucursales = response.data;
-          const sucursalesWithKeys = sucursales.map((e) => {
+          const cfdis = response.data;
+          const cfdisWithKeys = cfdis.map((e) => {
             return {
               ...e,
               key: e.id,
             };
           });
-          resolve(sucursalesWithKeys);
+          resolve(cfdisWithKeys);
         })
         .catch((error) => {
           reject(error);
@@ -36,10 +35,10 @@ export default class SucursalRepository {
     });
   }
 
-  createSucursal(sucursal) {
+  createCfdi(cfdi) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post("/sucursales", sucursal)
+        .post("/cfdi", cfdi)
         .then((response) => {
           resolve(response);
         })
@@ -49,10 +48,10 @@ export default class SucursalRepository {
     });
   }
 
-  updateSucursal(sucursal) {
+  updateCfdi(cfdi) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .put("/sucursales", sucursal)
+        .put("/cfdi", cfdi)
         .then((response) => {
           resolve(response);
         })
