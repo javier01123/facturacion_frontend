@@ -19,7 +19,7 @@ export default class SucursalRepository {
   getSucursales(empresaId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get(`empresas/${empresaId}/sucursales/`)
+        .get(`empresas/${empresaId}/sucursales`)
         .then((response) => {
           const sucursales = response.data;
           const sucursalesWithKeys = sucursales.map((e) => {
