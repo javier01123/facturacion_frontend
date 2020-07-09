@@ -60,4 +60,30 @@ export default class CfdiRepository {
         });
     });
   }
+
+  agregarPartida(cfdiId, partida) {
+    return new Promise((resolve, reject) => {
+      axios_instance
+        .post(`/cfdi/${cfdiId}/partidas`, partida)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  updatePartida(cfdiId, partida) {
+    return new Promise((resolve, reject) => {
+      axios_instance
+        .put(`/cfdi/${cfdiId}/partidas`, partida)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
 }

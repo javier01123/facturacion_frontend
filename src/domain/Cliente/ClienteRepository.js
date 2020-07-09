@@ -64,7 +64,7 @@ export default class ClienteRepository {
   searchClientes(empresaId, searchTerm) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post(`empresas/${empresaId}/clientes/search`)
+        .post(`empresas/${empresaId}/clientes/search`,{searchTerm})
         .then((response) => {
           const clientes = response.data;        
           resolve(clientes);

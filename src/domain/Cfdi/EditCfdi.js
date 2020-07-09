@@ -8,7 +8,7 @@ import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkErro
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { SaveOutlined } from "@ant-design/icons";
 import { useToasts } from "react-toast-notifications";
-
+import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { createColumn } from "../../utilities/tableUtils";
@@ -27,24 +27,6 @@ import {
   Space,
 } from "antd";
 
-const columns = [
-  createColumn("total", "Total"),
-  createColumn("cantidad", "Cantidad", { isNumeric: true }),
-  createColumn("valorUnitario", "Valor Unitario", { isNumeric: true }),
-  createColumn("importe", "Importe", { isNumeric: true }),
-  {
-    title: "acciones",
-    key: "acciones",
-    render: (text, record) => {
-      return (
-        <Space size="small">
-          <Button>Editar</Button>
-        </Space>
-      );
-    },
-  },
-];
-
 const { Option } = AutoComplete;
 
 export default function EditCfdi() {
@@ -56,6 +38,8 @@ export default function EditCfdi() {
   const [searchClienteResult, setSearchClienteResult] = useState();
   const [empresa, setEmpresa] = useState();
   const [modalPartidaVisible, setModalPartidaVisible] = useState();
+  const [partidaInitValues, setPartidaInitValues] = useState();
+  const [isPartidaNueva, setIsPartidaNueva] = useState();
 
   let { id } = useParams();
   const { addToast } = useToasts();
@@ -117,7 +101,6 @@ export default function EditCfdi() {
 
     const cfdiToPost = {
       ...values,
-      id: cfdiId,
       clienteId: cfdiState.clienteId,
     };
 
@@ -144,13 +127,63 @@ export default function EditCfdi() {
     setModalPartidaVisible(false);
   };
 
-  const editarPartidaClickHandler = () => {
+  const showAgregarPartidaHandler = () => {
+    setIsPartidaNueva(true);
+    setPartidaInitValues({});
     setModalPartidaVisible(true);
   };
 
-  const agregarPartidaClickHandler = (algo) => {
+  const showEditarPartidaHandler = (partidaId) => {
+    let partida = cfdiState.partidas.find((p) => p.Id === partidaId);
+    setPartidaInitValues(partida);
+    setIsPartidaNueva(false);
     setModalPartidaVisible(true);
   };
+
+  const cancelPartidaFormHandler = () => {
+    setModalPartidaVisible(false);
+  };
+
+  const submitPartidaFormHandler = (formValues) => {
+    if (isPartidaNueva === true) {
+      cfdiRepository
+        .agregarPartida(cfdiId, { ...formValues, Id: uuidv4() })
+        .then((response) => {
+          message.success("partida agregada");
+          setModalPartidaVisible(false);
+        })
+        .catch((error) => {});
+    } else {
+      cfdiRepository
+        .updatePartida(cfdiId, formValues)
+        .then((response) => {
+          message.success("partida modificada");
+          setModalPartidaVisible(false);
+        })
+        .catch((error) => {});
+    }
+  };
+
+  const columns = [
+    createColumn("descripcion", "Descripción", {}),
+    createColumn("cantidad", "Cantidad", { isNumeric: true }),
+    createColumn("valorUnitario", "Valor Unitario", { isNumeric: true }),
+    createColumn("importe", "Importe", { isNumeric: true }),
+    {
+      title: "acciones",
+      key: "acciones",
+      render: (text, record) => {
+        return (
+          <Space size="small">
+            <Button onClick={() => showEditarPartidaHandler(record.Id)}>
+              Editar
+            </Button>
+          </Space>
+        );
+      },
+    },
+  ];
+
   return (
     <React.Fragment>
       <Form
@@ -164,6 +197,9 @@ export default function EditCfdi() {
           // title="Generar CFDI"
           bordered={true}
         >
+          <Form.Item name="id">
+            <Input type="hidden" />
+          </Form.Item>
           <Button
             type="primary"
             htmlType="submit"
@@ -226,7 +262,7 @@ export default function EditCfdi() {
           <Button
             type="primary"
             htmlType="button"
-            onClick={agregarPartidaClickHandler}
+            onClick={showAgregarPartidaHandler}
           >
             Agregar Partida
           </Button>
@@ -245,17 +281,13 @@ export default function EditCfdi() {
       </Form>
 
       <Modal
-        title="Title"
+        title="Partida"
         visible={modalPartidaVisible}
         onOk={modalPartidaOkHandler}
-        okType=""
         // confirmLoading={confirmLoading}
-        // onCancel={handleCancel}
+        // onCancel={cancelPartidaFormHandler}
         footer={[
-          <Button
-            key="back"
-            // onClick={this.handleCancel}
-          >
+          <Button key="cancel" onClick={cancelPartidaFormHandler}>
             Cancel
           </Button>,
           <Button
@@ -269,7 +301,17 @@ export default function EditCfdi() {
           </Button>,
         ]}
       >
-        <Form id="partidaform" name="basic" size="small">
+        <Form
+          id="partidaform"
+          name="basic"
+          size="small"
+          onFinish={submitPartidaFormHandler}
+          initialValues={partidaInitValues}
+        >
+          <Form.Item name="id">
+            <Input type="hidden" />
+          </Form.Item>
+
           <Form.Item
             label="Descripción"
             name="descripcion"
