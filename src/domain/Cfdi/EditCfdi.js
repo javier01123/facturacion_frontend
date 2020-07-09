@@ -71,7 +71,9 @@ export default function EditCfdi() {
     setIsLoading(false);
   };
 
-  useEffect((sucursalId) => loadData(sucursalId), []);
+  useEffect((sucursalId) => {
+    loadData(sucursalId);
+  }, []);
 
   const handleSearch = async (value) => {
     let results = await clienteRepository.searchClientes(
