@@ -1,42 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import ClienteRepository from "./../Cliente/ClienteRepository";
+import EmpresaRepository from "./../Empresa/EmpresaRepository";
+import CfdiRepository from "./CfdiRepository";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
+import { SaveOutlined } from "@ant-design/icons";
+import { useToasts } from "react-toast-notifications";
+
+import { useSelector } from "react-redux";
+import moment from "moment";
+import { createColumn } from "../../utilities/tableUtils";
 import {
   Form,
   AutoComplete,
   DatePicker,
   Input,
+  InputNumber,
+  Table,
   Button,
   Card,
-  Row,
-  Col,
+  Divider,
+  message,
+  Modal,
+  Space,
 } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
-import CfdiRepository from "./CfdiRepository";
-import { useToasts } from "react-toast-notifications";
-import ClienteRepository from "./../Cliente/ClienteRepository";
-import { useSelector } from "react-redux";
-import moment from "moment";
+
+const columns = [
+  createColumn("total", "Total"),
+  createColumn("cantidad", "Cantidad", { isNumeric: true }),
+  createColumn("valorUnitario", "Valor Unitario", { isNumeric: true }),
+  createColumn("importe", "Importe", { isNumeric: true }),
+  {
+    title: "acciones",
+    key: "acciones",
+    render: (text, record) => {
+      return (
+        <Space size="small">
+          <Button>Editar</Button>
+        </Space>
+      );
+    },
+  },
+];
 
 const { Option } = AutoComplete;
-
-const layout = {
-  labelCol: {
-    span: 5,
-  },
-  wrapperCol: {
-    span: 19,
-  },
-  layout: "horizontal",
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 5,
-    span: 19,
-  },
-};
 
 export default function EditCfdi() {
   const [cfdiState, setCfdiState] = useState({});
@@ -45,26 +54,37 @@ export default function EditCfdi() {
   const [validationErrors, setValidationErrors] = useState(null);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [searchClienteResult, setSearchClienteResult] = useState();
+  const [empresa, setEmpresa] = useState();
+  const [modalPartidaVisible, setModalPartidaVisible] = useState();
 
   let { id } = useParams();
-  let history = useHistory();
+  const { addToast } = useToasts();
+
   const cfdiId = id;
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const cfdiRepository = new CfdiRepository();
   const clienteRepository = new ClienteRepository();
-  const { addToast } = useToasts();
+  const empresaRepository = new EmpresaRepository();
 
-  const loadData = () => {
-    cfdiRepository
-      .getCfdiById(cfdiId)
-      .then((response) => {
-        response.fechaEmision = moment(response.fechaEmision);
-        setCfdiState(response);
-      })
-      .catch((error) => {
-        setNetworkError(error);
-      })
-      .finally(() => setIsLoading(false));
+  const loadData = async () => {
+    // cfdiRepository
+    //   .getCfdiById(cfdiId)
+    //   .then((response) => {
+    //     response.fechaEmision = moment(response.fechaEmision);
+    //     setCfdiState(response);
+    //   })
+    //   .catch((error) => {
+    //     setNetworkError(error);
+    //   })
+    //   .finally(() => setIsLoading(false));
+
+    const cfdi = await cfdiRepository.getCfdiById(cfdiId);
+    const empresa = await empresaRepository.getEmpresaById(empresaActualId);
+    cfdi.fechaEmision = moment(cfdi.fechaEmision);
+
+    setCfdiState(cfdi);
+    setEmpresa(empresa);
+    setIsLoading(false);
   };
 
   useEffect((sucursalId) => loadData(sucursalId), []);
@@ -93,8 +113,7 @@ export default function EditCfdi() {
   const initialValues = cfdiState;
 
   const onFinishHandler = (values) => {
-
-console.log({values});
+    console.log({ values });
 
     const cfdiToPost = {
       ...values,
@@ -107,7 +126,7 @@ console.log({values});
     cfdiRepository
       .updateCfdi(cfdiToPost)
       .then((response) => {
-        history.push("/cfdi");
+        message.success("cambios guardados exitosamente!", 0.8);
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -116,69 +135,35 @@ console.log({values});
           addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
-      .finally(() => setIsSubmiting(false));
+      .finally(() => {
+        setIsSubmiting(false);
+      });
   };
 
+  const modalPartidaOkHandler = () => {
+    setModalPartidaVisible(false);
+  };
+
+  const editarPartidaClickHandler = () => {
+    setModalPartidaVisible(true);
+  };
+
+  const agregarPartidaClickHandler = (algo) => {
+    setModalPartidaVisible(true);
+  };
   return (
-    <Form
-      {...layout}
-      name="basic"
-      size="small"
-      initialValues={initialValues}
-      onFinish={onFinishHandler}
-    >
-      <Card
-        style={{ backgroundColor: "white" }}
-        title="Datos fiscales"
-        bordered={true}
+    <React.Fragment>
+      <Form
+        name="basic"
+        size="small"
+        initialValues={initialValues}
+        onFinish={onFinishHandler}
       >
-        <Form.Item
-          label="Cliente"
-          name="razonSocialCliente"
-          rules={[
-            {
-              required: true,
-              whitespace: true,
-              message: "obligatorio",
-            },
-          ]}
+        <Card
+          // style={{ backgroundColor: "white" }}
+          // title="Generar CFDI"
+          bordered={true}
         >
-          <AutoComplete
-            onSearch={handleSearch}
-            onSelect={(val, option) => onSelect(val, option)}
-            placeholder="Seleccione el cliente"
-          >
-            {searchClienteResult &&
-              searchClienteResult.map((cliente) => (
-                <Option key={cliente.id} value={cliente.razonSocial}>
-                  {cliente.razonSocial}
-                </Option>
-              ))}
-          </AutoComplete>
-        </Form.Item>
-        <Form.Item
-          label="Fecha de Emisión"
-          name="fechaEmision"
-          rules={[
-            {
-              required: true,
-              message: "obligatorio",
-            },
-          ]}
-        >
-          <DatePicker
-            showTime={{ format: "HH:mm" }}
-            format="YYYY-MM-DD HH:mm"
-          />
-        </Form.Item>
-      </Card>
-
-      {validationErrors ? (
-        <ValidationErrors validationErrors={validationErrors} />
-      ) : null}
-
-      <Card>
-        <Form.Item {...tailLayout}>
           <Button
             type="primary"
             htmlType="submit"
@@ -188,8 +173,150 @@ console.log({values});
           >
             Guardar Cambios
           </Button>
-        </Form.Item>
-      </Card>
-    </Form>
+          <Divider orientation="left">Emisor</Divider>
+
+          <p>Razón Social: {empresa.razonSocial} </p>
+          <p>R.F.C: {empresa.rfc} </p>
+
+          <Divider orientation="left">Datos Fiscales</Divider>
+          <Form.Item
+            label="Fecha de Emisión"
+            name="fechaEmision"
+            rules={[
+              {
+                required: true,
+                message: "obligatorio",
+              },
+            ]}
+          >
+            <DatePicker
+              showTime={{ format: "HH:mm" }}
+              format="YYYY-MM-DD HH:mm"
+            />
+          </Form.Item>
+
+          <Divider orientation="left">Cliente</Divider>
+
+          <Form.Item
+            label="Cliente"
+            name="razonSocialCliente"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: "obligatorio",
+              },
+            ]}
+          >
+            <AutoComplete
+              onSearch={handleSearch}
+              onSelect={(val, option) => onSelect(val, option)}
+              placeholder="Seleccione el cliente"
+            >
+              {searchClienteResult &&
+                searchClienteResult.map((cliente) => (
+                  <Option key={cliente.id} value={cliente.razonSocial}>
+                    {cliente.razonSocial}
+                  </Option>
+                ))}
+            </AutoComplete>
+          </Form.Item>
+
+          <Divider orientation="left">Partidas</Divider>
+          <Button
+            type="primary"
+            htmlType="button"
+            onClick={agregarPartidaClickHandler}
+          >
+            Agregar Partida
+          </Button>
+          <Table
+            // components={components}
+            rowClassName={() => "editable-row"}
+            bordered
+            dataSource={cfdiState.partidas}
+            columns={columns}
+          />
+        </Card>
+
+        {validationErrors ? (
+          <ValidationErrors validationErrors={validationErrors} />
+        ) : null}
+      </Form>
+
+      <Modal
+        title="Title"
+        visible={modalPartidaVisible}
+        onOk={modalPartidaOkHandler}
+        okType=""
+        // confirmLoading={confirmLoading}
+        // onCancel={handleCancel}
+        footer={[
+          <Button
+            key="back"
+            // onClick={this.handleCancel}
+          >
+            Cancel
+          </Button>,
+          <Button
+            form="partidaform"
+            key="submit"
+            type="primary"
+            htmlType="submit"
+            // loading={loading}
+          >
+            Submit
+          </Button>,
+        ]}
+      >
+        <Form id="partidaform" name="basic" size="small">
+          <Form.Item
+            label="Descripción"
+            name="descripcion"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: "obligatorio",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Cantidad"
+            name="cantidad"
+            min={0}
+            step={1}
+            rules={[
+              {
+                required: true,
+                message: "obligatorio",
+              },
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
+          <Form.Item
+            label="Valor Unitario"
+            name="valorUnitario"
+            min={0}
+            rules={[
+              {
+                required: true,
+                message: "obligatorio",
+              },
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
+          <Form.Item label="Importe" name="importe">
+            <InputNumber readOnly disabled />
+          </Form.Item>
+
+          {/* <Button htmlType="submit">Guardar</Button> */}
+        </Form>
+      </Modal>
+    </React.Fragment>
   );
 }
