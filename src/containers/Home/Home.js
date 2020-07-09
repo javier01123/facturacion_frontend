@@ -20,6 +20,7 @@ import * as actionCreators from "../../store/actionCreators";
 import axios_instance from "../../services/httpClient/axios_instance";
 import CatalogoCfdi from "../../domain/Cfdi/CatalogoCfdi";
 import CreateCfdi from "../../domain/Cfdi/CreateCfdi";
+import EditCfdi from "../../domain/Cfdi/EditCfdi";
 // import { NodeExpandOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -49,11 +50,11 @@ const Home = () => {
   return (
     <Layout
       className="layout"
-       style={{ padding: 0, margin: 0, flex: "none !important",width:'100%'}}
+      style={{ padding: 0, margin: 0, flex: "none !important", width: "100%" }}
     >
       <Header>
         {/* <div className="logo" /> */}
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}  >
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1">
             <Link to="/">Home</Link>
           </Menu.Item>
@@ -137,6 +138,7 @@ const Home = () => {
               <Route path="/clientes/create" component={CreateCliente} />
               <Route exact path="/cfdi" component={CatalogoCfdi} />
               <Route exact path="/cfdi/create" component={CreateCfdi} />
+              <Route path="/cfdi/edit/:id" component={EditCfdi} />
 
               <Route exact path="/">
                 <div>Home</div>

@@ -3,7 +3,16 @@ import { useHistory } from "react-router-dom";
 import CfdiRepository from "./CfdiRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
-import { Form, AutoComplete, Input, Button, Card, Row, Col } from "antd";
+import {
+  Form,
+  AutoComplete,
+  DatePicker,
+  Input,
+  Button,
+  Card,
+  Row,
+  Col,
+} from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import * as patterns from "../../utilities/regexPatterns";
@@ -57,7 +66,8 @@ export default function CreateCfdi() {
   const onFinish = (values) => {
     const cfdiToPost = {
       ...values,
-      Id: clienteId,
+      Id: uuidv4(),
+      clienteId: clienteId,
     };
 
     setIsSubmiting(true);
@@ -92,7 +102,7 @@ export default function CreateCfdi() {
       >
         <Form.Item
           label="Cliente"
-          name="clienteId"
+          name="razonSocialCliente"
           rules={[
             {
               required: true,
@@ -112,6 +122,22 @@ export default function CreateCfdi() {
               </Option>
             ))}
           </AutoComplete>
+        </Form.Item>
+
+        <Form.Item
+          label="Fecha de Emisión"
+          name="fechaEmision"
+          rules={[
+            {
+              required: true,
+              message: "obligatorio",
+            },
+          ]}
+        >
+          <DatePicker
+            showTime={{ format: "HH:mm" }}
+            format="YYYY-MM-DD HH:mm"
+          />
         </Form.Item>
       </Card>
 

@@ -13,9 +13,10 @@ import {
 } from "../../utilities/tableUtils";
 
 const columns = [
-  createColumn("razonSocial", "Razón social"),
-  createColumn("rfc", "RFC"),
-  createColumn("total", "Total"),
+  createColumn("razonSocialCliente", "Razón social"),
+  createColumn("rfcCliente", "RFC"),
+  createColumn("fechaEmision", "Fecha de Emisión"),
+  createColumn("total", "Total", { isNumeric: true }),
   createEditarColumn("Editar", "editar", "/cfdi/edit/"),
 ];
 
@@ -29,9 +30,10 @@ export default function CatalogoCfdi() {
   const cfdiRepository = new CfdiRepository();
 
   const getCfdis = () => {
-    cfdiRepository.getCfdis(empresaActualId)
-      .then((cfdis) => {
-        setCfdis(cfdis);
+    cfdiRepository
+      .getCfdis(empresaActualId)
+      .then((response) => {
+        setCfdis(response);
       })
       .catch((error) => {
         setNetworkError(error);

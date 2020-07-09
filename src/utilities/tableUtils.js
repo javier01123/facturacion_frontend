@@ -3,6 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const createColumn = (dataIndex, title, options = {}) => {
+  let sorterImpl = (a, b) => a[dataIndex].localeCompare(b[dataIndex]);
+
+  if (options.isNumeric === true) {
+    sorterImpl = (a, b) => a[dataIndex] - b[dataIndex];
+  }
+
   return {
     key: dataIndex,
     dataIndex,
@@ -10,7 +16,7 @@ export const createColumn = (dataIndex, title, options = {}) => {
     defaultSortOrder: "ascend",
     sortDirections: ["descend", "ascend"],
     ellipsis: true,
-    sorter: (a, b) => a[dataIndex].localeCompare(b[dataIndex]),
+    sorter: sorterImpl,
     ...options,
   };
 };
