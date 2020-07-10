@@ -1,55 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import ClienteRepository from "../Cliente/ClienteRepository";
-import EmpresaRepository from "../Empresa/EmpresaRepository";
-import CfdiRepository from "./CfdiRepository";
-import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
-import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
-import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
-import { SaveOutlined } from "@ant-design/icons";
-import { useToasts } from "react-toast-notifications";
-import { v4 as uuidv4 } from "uuid";
-import { useSelector } from "react-redux";
-import moment from "moment";
-import { createColumn } from "../../utilities/tableUtils";
-import {
-  Form,
-  AutoComplete,
-  DatePicker,
-  Input,
-  InputNumber,
-  Table,
-  Button,
-  Card,
-  Divider,
-  message,
-  Modal,
-  Space,
-} from "antd";
+import React from "react";
+import { Form, Input, InputNumber } from "antd";
 
 const PartidaEdit = (props) => {
-  let { id } = useParams();
-  const { addToast } = useToasts();
-  const cfdiId = id;
-  const cfdiRepository = new CfdiRepository();
-  const [isLoading, setIsLoading] = useState();
-  const [isPartidaNueva, setIsPartidaNueva] = useState();
-
   const [form] = Form.useForm();
 
   React.useEffect(() => {
-    // console.log({ msg: "component updated", props });
     form.setFieldsValue(props);
   });
 
-  
-
   const valuesChangedHandler = (formValues) => {
-   console.log({formValues});
-
+    //  console.log({formValues});
     // formValues.importe = formValues.cantidad * formValues.valorUnitario;
     // form.setFieldsValue(formValues);
-
   };
 
   return (

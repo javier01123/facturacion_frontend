@@ -40,7 +40,7 @@ export default function EditCfdi() {
   const [empresa, setEmpresa] = useState();
   const [modalPartidaVisible, setModalPartidaVisible] = useState();
   const [partidaInitValues, setPartidaInitValues] = useState();
-  const [isPartidaNueva, setIsPartidaNueva]= useState();
+  const [isPartidaNueva, setIsPartidaNueva] = useState();
 
   let { id } = useParams();
   const { addToast } = useToasts();
@@ -112,6 +112,7 @@ export default function EditCfdi() {
     const cfdiToPost = {
       ...values,
       clienteId: cfdiState.clienteId,
+      partidas: cfdiState.partidas,
     };
 
     setIsSubmiting(true);
@@ -139,12 +140,7 @@ export default function EditCfdi() {
   };
 
   const showAgregarPartidaHandler = () => {
-    setPartidaInitValues({
-      cantidad: "",
-      valorUnitario: "",
-      Importe: 0,
-      descripcion: "",
-    });
+    setPartidaInitValues({});
     setIsPartidaNueva(true);
     setModalPartidaVisible(true);
   };
@@ -181,29 +177,29 @@ export default function EditCfdi() {
   ];
 
   const submitPartidaFormHandler = (formValues) => {
-    
-
     if (isPartidaNueva === true) {
-      cfdiRepository
-        .agregarPartida(cfdiId, { ...formValues, Id: uuidv4() })
-        .then((response) => {
-          message.success("partida agregada");
-           setModalPartidaVisible(false);
-        })
-        .catch((error) => {});
+      const id = uuidv4();
+      let newState = { ...cfdiState };
+      newState.partidas.push({ ...formValues, id: id, key: id });
+      setCfdiState(newState);
+      setModalPartidaVisible(false);
+      // message.success("partida agregada");
+      setModalPartidaVisible(false);
     } else {
-      cfdiRepository
-        .updatePartida(cfdiId, formValues)
-        .then((response) => {
-          message.success("partida modificada");
-           setModalPartidaVisible(false);
-        })
-        .catch((error) => {});
+      let newState = { ...cfdiState };
+      let partida = newState.partidas.find((p) => p.id === formValues.id);
+      partida.cantidad = formValues.cantidad;
+      partida.valorUnitario = formValues.valorUnitario;
+      partida.descripcion = formValues.descripcion;
+      setCfdiState(newState);
+      // message.success("partida modificada");
+      setModalPartidaVisible(false);
     }
   };
 
   return (
     <React.Fragment>
+      {console.log({ cfdiState })}
       <Form
         name="basic"
         size="small"
@@ -319,7 +315,10 @@ export default function EditCfdi() {
           </Button>,
         ]}
       >
-        <PartidaEdit submitHandler={submitPartidaFormHandler} {...partidaInitValues} />
+        <PartidaEdit
+          submitHandler={submitPartidaFormHandler}
+          {...partidaInitValues}
+        />
       </Modal>
     </React.Fragment>
   );
