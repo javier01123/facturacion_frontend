@@ -11,6 +11,7 @@ import { useToasts } from "react-toast-notifications";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import PartidaEdit from "./PartidaEdit";
 import { createColumn } from "../../utilities/tableUtils";
 import {
   Form,
@@ -39,7 +40,7 @@ export default function EditCfdi() {
   const [empresa, setEmpresa] = useState();
   const [modalPartidaVisible, setModalPartidaVisible] = useState();
   const [partidaInitValues, setPartidaInitValues] = useState();
-  const [isPartidaNueva, setIsPartidaNueva] = useState();
+  const [isPartidaNueva, setIsPartidaNueva]= useState();
 
   let { id } = useParams();
   const { addToast } = useToasts();
@@ -61,14 +62,21 @@ export default function EditCfdi() {
     //     setNetworkError(error);
     //   })
     //   .finally(() => setIsLoading(false));
-
-    const cfdi = await cfdiRepository.getCfdiById(cfdiId);
-    const empresa = await empresaRepository.getEmpresaById(empresaActualId);
-    cfdi.fechaEmision = moment(cfdi.fechaEmision);
-
-    setCfdiState(cfdi);
-    setEmpresa(empresa);
-    setIsLoading(false);
+    try {
+      const cfdi = await cfdiRepository.getCfdiById(cfdiId);
+      const empresa = await empresaRepository.getEmpresaById(empresaActualId);
+      cfdi.fechaEmision = moment(cfdi.fechaEmision);
+      cfdi.partidas = cfdi.partidas.map((p) => {
+        return { ...p, key: p.id };
+      });
+      setCfdiState(cfdi);
+      setEmpresa(empresa);
+    } catch (ex) {
+      console.log(ex);
+      setNetworkError(ex);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect((sucursalId) => {
@@ -111,6 +119,7 @@ export default function EditCfdi() {
     cfdiRepository
       .updateCfdi(cfdiToPost)
       .then((response) => {
+        setModalPartidaVisible(false);
         message.success("cambios guardados exitosamente!", 0.8);
       })
       .catch((error) => {
@@ -130,40 +139,25 @@ export default function EditCfdi() {
   };
 
   const showAgregarPartidaHandler = () => {
+    setPartidaInitValues({
+      cantidad: "",
+      valorUnitario: "",
+      Importe: 0,
+      descripcion: "",
+    });
     setIsPartidaNueva(true);
-    setPartidaInitValues({});
     setModalPartidaVisible(true);
   };
 
   const showEditarPartidaHandler = (partidaId) => {
-    let partida = cfdiState.partidas.find((p) => p.Id === partidaId);
-    setPartidaInitValues(partida);
+    let partida = cfdiState.partidas.find((p) => p.id === partidaId);
     setIsPartidaNueva(false);
+    setPartidaInitValues(partida);
     setModalPartidaVisible(true);
   };
 
   const cancelPartidaFormHandler = () => {
     setModalPartidaVisible(false);
-  };
-
-  const submitPartidaFormHandler = (formValues) => {
-    if (isPartidaNueva === true) {
-      cfdiRepository
-        .agregarPartida(cfdiId, { ...formValues, Id: uuidv4() })
-        .then((response) => {
-          message.success("partida agregada");
-          setModalPartidaVisible(false);
-        })
-        .catch((error) => {});
-    } else {
-      cfdiRepository
-        .updatePartida(cfdiId, formValues)
-        .then((response) => {
-          message.success("partida modificada");
-          setModalPartidaVisible(false);
-        })
-        .catch((error) => {});
-    }
   };
 
   const columns = [
@@ -177,7 +171,7 @@ export default function EditCfdi() {
       render: (text, record) => {
         return (
           <Space size="small">
-            <Button onClick={() => showEditarPartidaHandler(record.Id)}>
+            <Button onClick={() => showEditarPartidaHandler(record.id)}>
               Editar
             </Button>
           </Space>
@@ -185,6 +179,28 @@ export default function EditCfdi() {
       },
     },
   ];
+
+  const submitPartidaFormHandler = (formValues) => {
+    
+
+    if (isPartidaNueva === true) {
+      cfdiRepository
+        .agregarPartida(cfdiId, { ...formValues, Id: uuidv4() })
+        .then((response) => {
+          message.success("partida agregada");
+           setModalPartidaVisible(false);
+        })
+        .catch((error) => {});
+    } else {
+      cfdiRepository
+        .updatePartida(cfdiId, formValues)
+        .then((response) => {
+          message.success("partida modificada");
+           setModalPartidaVisible(false);
+        })
+        .catch((error) => {});
+    }
+  };
 
   return (
     <React.Fragment>
@@ -297,69 +313,13 @@ export default function EditCfdi() {
             key="submit"
             type="primary"
             htmlType="submit"
-            // loading={loading}
+            loading={isSubmiting}
           >
             Submit
           </Button>,
         ]}
       >
-        <Form
-          id="partidaform"
-          name="basic"
-          size="small"
-          onFinish={submitPartidaFormHandler}
-          initialValues={partidaInitValues}
-        >
-          <Form.Item name="id">
-            <Input type="hidden" />
-          </Form.Item>
-
-          <Form.Item
-            label="Descripción"
-            name="descripcion"
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: "obligatorio",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Cantidad"
-            name="cantidad"
-            min={0}
-            step={1}
-            rules={[
-              {
-                required: true,
-                message: "obligatorio",
-              },
-            ]}
-          >
-            <InputNumber />
-          </Form.Item>
-          <Form.Item
-            label="Valor Unitario"
-            name="valorUnitario"
-            min={0}
-            rules={[
-              {
-                required: true,
-                message: "obligatorio",
-              },
-            ]}
-          >
-            <InputNumber />
-          </Form.Item>
-          <Form.Item label="Importe" name="importe">
-            <InputNumber readOnly disabled />
-          </Form.Item>
-
-          {/* <Button htmlType="submit">Guardar</Button> */}
-        </Form>
+        <PartidaEdit submitHandler={submitPartidaFormHandler} {...partidaInitValues} />
       </Modal>
     </React.Fragment>
   );
