@@ -8,6 +8,7 @@ import {
   AutoComplete,
   DatePicker,
   Input,
+  InputNumber,
   Button,
   Card,
   Row,
@@ -18,6 +19,7 @@ import { useSelector } from "react-redux";
 import * as patterns from "../../utilities/regexPatterns";
 import { useToasts } from "react-toast-notifications";
 import ClienteRepository from "./../Cliente/ClienteRepository";
+import moment from "moment";
 
 const layout = {
   labelCol: {
@@ -44,7 +46,7 @@ export default function CreateCfdi() {
   const [clienteId, setClienteId] = useState();
 
   let history = useHistory();
-  const initialValues = {};
+  const initialValues = { serie: "F", fechaEmision: moment() };
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const sucursalActualId = useSelector((state) => state.sucursalActualId);
   const cfdiRepository = new CfdiRepository();
@@ -140,6 +142,42 @@ export default function CreateCfdi() {
             showTime={{ format: "HH:mm" }}
             format="YYYY-MM-DD HH:mm"
           />
+        </Form.Item>
+        <Form.Item
+          label="Serie"
+          name="serie"
+          rules={[
+            {
+              type: "string",
+            },
+            {
+              required: true,
+              message: "obligatorio",
+            },
+            {
+              max: 10,
+              message: "longitud máxima 10",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Folio"
+          name="folio"
+          rules={[
+            {
+              required: true,
+              message: "obligatorio",
+            },
+            {
+              type: "number",
+              message: "no es un número valido",
+            },
+          ]}
+        >
+          <InputNumber />
         </Form.Item>
       </Card>
 

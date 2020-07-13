@@ -108,7 +108,7 @@ const Home = () => {
           <Menu.Item key="8" style={{ float: "right" }}>
             <div
               onClick={() => {
-                axios_instance.get("usuario/logout").then((res) => {
+                axios_instance.get("usuarios/logout").then((res) => {
                   dispatch(actionCreators.logout());
                 });
               }}

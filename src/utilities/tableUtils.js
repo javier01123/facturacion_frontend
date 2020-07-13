@@ -21,7 +21,7 @@ export const createColumn = (dataIndex, title, options = {}) => {
   };
 };
 
-export const createEditarColumn = (title, key, route) => {
+export const createEditarColumn = (title, key, route,options={}) => {
   return {
     title: title,
     key: key,
@@ -32,6 +32,7 @@ export const createEditarColumn = (title, key, route) => {
         </Space>
       );
     },
+    ...options,
   };
 };
 

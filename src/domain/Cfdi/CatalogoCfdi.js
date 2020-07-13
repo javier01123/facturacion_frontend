@@ -11,13 +11,22 @@ import {
   createEditarColumn,
   search,
 } from "../../utilities/tableUtils";
+import moment from "moment";
 
 const columns = [
+  createColumn("serie", "Serie"),
+  createColumn("folio", "Folio", { isNumeric: true }),
+  createColumn("fechaEmision", "Fecha de Emisión", {
+    render: (value) => moment(value).format("DD-MM-YYYY"),
+  }),
   createColumn("razonSocialCliente", "Razón social"),
   createColumn("rfcCliente", "RFC"),
-  createColumn("fechaEmision", "Fecha de Emisión"),
-  createColumn("total", "Total", { isNumeric: true }),
-  createEditarColumn("Editar", "editar", "/cfdi/edit/"),
+
+  createColumn("total", "Total", {
+    isNumeric: true,
+    render: (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  }),
+  createEditarColumn("Editar", "editar", "/cfdi/edit/", { width: 70 }),
 ];
 
 export default function CatalogoCfdi() {
@@ -80,7 +89,10 @@ export default function CatalogoCfdi() {
         </Col>
       </Row>
 
-      <Table columns={columns} dataSource={filteredData || cfdis} />
+      <Table      
+        columns={columns}
+        dataSource={filteredData || cfdis}
+      />
     </Fragment>
   );
 }

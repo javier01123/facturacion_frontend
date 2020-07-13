@@ -27,6 +27,7 @@ import {
   Modal,
   Space,
   Select,
+  Descriptions,
 } from "antd";
 
 const { Option } = AutoComplete;
@@ -179,7 +180,7 @@ export default function EditCfdi() {
     },
   ];
 
-  const submitPartidaFormHandler =  (formValues) => {
+  const submitPartidaFormHandler = (formValues) => {
     console.log({ isPartidaNueva });
 
     if (isPartidaNueva === true) {
@@ -188,21 +189,20 @@ export default function EditCfdi() {
       newState.partidas.push({ ...formValues, id: id, key: id });
       setCfdiState(newState);
       setModalPartidaVisible(false);
-      setModalPartidaVisible(false);       
     } else {
       let newState = { ...cfdiState };
       let partida = newState.partidas.find((p) => p.id === formValues.id);
       partida.cantidad = formValues.cantidad;
       partida.valorUnitario = formValues.valorUnitario;
       partida.descripcion = formValues.descripcion;
-      setCfdiState(newState);    
-      setModalPartidaVisible(false);      
+      setCfdiState(newState);
+      setModalPartidaVisible(false);
     }
   };
 
   return (
     <React.Fragment>
-      {console.log({ cfdiState })}
+      {/* {console.log({ cfdiState })} */}
       <Form
         name="basic"
         size="small"
@@ -228,16 +228,22 @@ export default function EditCfdi() {
           </Button>
           <Divider orientation="left">Emisor</Divider>
 
-          <p>Razón Social: {empresa.razonSocial} </p>
-          <p>R.F.C: {empresa.rfc} </p>
-
-          <Divider orientation="left">Datos Fiscales</Divider>
-          <Form.Item label="Serie" name="serie">
-            <Input />
+          <Form.Item label="Razón Social">
+            <span className="ant-form-text">{empresa.razonSocial}</span>
           </Form.Item>
 
-          <Form.Item label="Folio" name="folio">
-            <InputNumber />
+          <Form.Item label="R.F.C">
+            <span className="ant-form-text">{empresa.rfc}</span>
+          </Form.Item>
+
+          <Divider orientation="left">Datos Fiscales</Divider>
+
+          <Form.Item label="Serie">
+            <span className="ant-form-text">{initialValues.serie}</span>
+          </Form.Item>
+
+          <Form.Item label="Folio">
+            <span className="ant-form-text">{initialValues.folio}</span>
           </Form.Item>
 
           <Form.Item
@@ -258,8 +264,21 @@ export default function EditCfdi() {
 
           <Divider orientation="left">Pago</Divider>
 
-          <Form.Item label="Método de pago" name="metodoDePago">
-            <Select>
+          <Form.Item
+            label="Método de pago"
+            name="metodoDePago"
+            rules={[
+              // {
+              //   enum: [1, 2],
+              //   message: "seleccione una opción",
+              // },
+              {
+                required:true,
+                message:"obligatorio",
+              }
+            ]}
+          >
+            <Select allowClear placeholder="seleccione una opción">
               <Option value={1}>PUE - Pago en una sola exhibición</Option>
               <Option value={2}>PPD - Pago en parcialidades o diferido</Option>
             </Select>

@@ -2,8 +2,8 @@ export const formatCreateAndUpdateErrors = (axiosError) => {
   let formatedError = {};
   const response = axiosError.response;
 
-  if (!response){
-     return {};
+  if (!response) {
+    return {};
   }
 
   if (response && response.status === 400) {

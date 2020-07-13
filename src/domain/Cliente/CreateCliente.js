@@ -80,6 +80,7 @@ export default function CreateCliente() {
         <Form.Item
           label="Razón Social"
           name="razonSocial"
+          normalize={(value) => (value || "").toUpperCase()}
           rules={[
             {
               required: true,

@@ -96,6 +96,7 @@ export default function EditEmpresa() {
         <Form.Item
           label="Razón Social"
           name="razonSocial"
+          normalize={(value) => (value || "").toUpperCase()}
           rules={
             [
               {
