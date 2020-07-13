@@ -142,8 +142,6 @@ export default function EditCliente() {
           <ValidationErrors validationErrors={validationErrors} />
         ) : null}
       </Form>
-
-      <Card title="Sucursales"></Card>
     </React.Fragment>
   );
 }

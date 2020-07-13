@@ -25,13 +25,14 @@ export default function CatalogoCfdi() {
   const [networkError, setNetworkError] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
 
-  const empresaActualId = useSelector((state) => state.empresaActualId);
+  // const empresaActualId = useSelector((state) => state.empresaActualId);
+  const sucursalActualId = useSelector((state) => state.sucursalActualId);
   let history = useHistory();
   const cfdiRepository = new CfdiRepository();
 
   const getCfdis = () => {
     cfdiRepository
-      .getCfdis(empresaActualId)
+      .getCfdiPorSucursal(sucursalActualId)
       .then((response) => {
         setCfdis(response);
       })

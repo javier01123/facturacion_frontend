@@ -26,9 +26,11 @@ import {
   message,
   Modal,
   Space,
+  Select,
 } from "antd";
 
 const { Option } = AutoComplete;
+// const { SelectOption } = Select;
 
 export default function EditCfdi() {
   const [cfdiState, setCfdiState] = useState({});
@@ -79,8 +81,8 @@ export default function EditCfdi() {
     }
   };
 
-  useEffect((sucursalId) => {
-    loadData(sucursalId);
+  useEffect(() => {
+    loadData();
   }, []);
 
   const handleSearch = async (value) => {
@@ -119,7 +121,8 @@ export default function EditCfdi() {
 
     cfdiRepository
       .updateCfdi(cfdiToPost)
-      .then((response) => {
+      .then(async (response) => {
+        await loadData();
         setModalPartidaVisible(false);
         message.success("cambios guardados exitosamente!", 0.8);
       })
@@ -176,24 +179,24 @@ export default function EditCfdi() {
     },
   ];
 
-  const submitPartidaFormHandler = (formValues) => {
+  const submitPartidaFormHandler =  (formValues) => {
+    console.log({ isPartidaNueva });
+
     if (isPartidaNueva === true) {
       const id = uuidv4();
       let newState = { ...cfdiState };
       newState.partidas.push({ ...formValues, id: id, key: id });
       setCfdiState(newState);
       setModalPartidaVisible(false);
-      // message.success("partida agregada");
-      setModalPartidaVisible(false);
+      setModalPartidaVisible(false);       
     } else {
       let newState = { ...cfdiState };
       let partida = newState.partidas.find((p) => p.id === formValues.id);
       partida.cantidad = formValues.cantidad;
       partida.valorUnitario = formValues.valorUnitario;
       partida.descripcion = formValues.descripcion;
-      setCfdiState(newState);
-      // message.success("partida modificada");
-      setModalPartidaVisible(false);
+      setCfdiState(newState);    
+      setModalPartidaVisible(false);      
     }
   };
 
@@ -229,6 +232,14 @@ export default function EditCfdi() {
           <p>R.F.C: {empresa.rfc} </p>
 
           <Divider orientation="left">Datos Fiscales</Divider>
+          <Form.Item label="Serie" name="serie">
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="Folio" name="folio">
+            <InputNumber />
+          </Form.Item>
+
           <Form.Item
             label="Fecha de Emisión"
             name="fechaEmision"
@@ -243,6 +254,15 @@ export default function EditCfdi() {
               showTime={{ format: "HH:mm" }}
               format="YYYY-MM-DD HH:mm"
             />
+          </Form.Item>
+
+          <Divider orientation="left">Pago</Divider>
+
+          <Form.Item label="Método de pago" name="metodoDePago">
+            <Select>
+              <Option value={1}>PUE - Pago en una sola exhibición</Option>
+              <Option value={2}>PPD - Pago en parcialidades o diferido</Option>
+            </Select>
           </Form.Item>
 
           <Divider orientation="left">Cliente</Divider>

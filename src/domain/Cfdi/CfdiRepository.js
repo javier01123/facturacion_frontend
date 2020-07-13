@@ -15,10 +15,10 @@ export default class CfdiRepository {
     });
   }
 
-  getCfdis(empresaId) {
+  getCfdiPorSucursal(sucursalId) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .get(`/empresas/${empresaId}/cfdi`)
+        .get(`/sucursales/${sucursalId}/cfdi`)
         .then((response) => {
           const cfdis = response.data;
           const cfdisWithKeys = cfdis.map((e) => {

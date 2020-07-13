@@ -46,6 +46,7 @@ export default function CreateCfdi() {
   let history = useHistory();
   const initialValues = {};
   const empresaActualId = useSelector((state) => state.empresaActualId);
+  const sucursalActualId = useSelector((state) => state.sucursalActualId);
   const cfdiRepository = new CfdiRepository();
   const clienteRepository = new ClienteRepository();
   const { addToast } = useToasts();
@@ -68,6 +69,7 @@ export default function CreateCfdi() {
       ...values,
       Id: uuidv4(),
       clienteId: clienteId,
+      sucursalId: sucursalActualId,
     };
 
     setIsSubmiting(true);
@@ -114,7 +116,7 @@ export default function CreateCfdi() {
           <AutoComplete
             onSearch={handleSearch}
             onSelect={(val, option) => onSelect(val, option)}
-            placeholder="Seleccione el cliente"
+            placeholder="Busque el cliente"
           >
             {result.map((cliente) => (
               <Option key={cliente.id} value={cliente.razonSocial}>
