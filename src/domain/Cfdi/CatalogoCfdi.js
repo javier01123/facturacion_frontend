@@ -3,49 +3,44 @@ import CfdiRepository from "./CfdiRepository";
 import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
-import { Table, Button, Input, Row, Col, Space } from "antd";
+import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  createColumn,
-  createEditarColumn,
-  search,
-} from "../../utilities/tableUtils";
+import * as tableUtils from "../../utilities/tableUtils";
 import * as renderers from "../../utilities/columnRederers";
 
-const actionsColum = {
-  title: "",
-  key: "acciones",
-  width: 100,
-  render: (text, record) => {
-    return (
-      <React.Fragment>
-        <Link size="small" to={`/cfdi/edit/${record.id}`}>
-          <EditTwoTone />
-        </Link>
-
-        <Button type="link" size="small" icon={<DeleteTwoTone />} />
-      </React.Fragment>
-    );
-  },
-};
+// const actionsColum = {
+//   title: "",
+//   key: "acciones",
+//   width: 100,
+//   render: (text, record) => {
+//     return (
+//       <React.Fragment>
+//         <Link size="small" to={`/cfdi/edit/${record.id}`}>
+//           <EditTwoTone />
+//         </Link>
+//       </React.Fragment>
+//     );
+//   },
+// };
 
 const columns = [
-  createColumn("serie", "Serie"),
-  createColumn("folio", "Folio", { isNumeric: true }),
-  createColumn("fechaEmision", "Fecha de Emisión", {
+  tableUtils.createColumn("serie", "Serie"),
+  tableUtils.createColumn("folio", "Folio", { isNumeric: true }),
+  tableUtils.createColumn("fechaEmision", "Fecha de Emisión", {
     responsive: ["md"],
     render: renderers.dateRenderer,
   }),
-  createColumn("razonSocialCliente", "Razón social", { responsive: ["md"] }),
-  createColumn("rfcCliente", "RFC", { responsive: ["md"] }),
-
-  createColumn("total", "Total", {
+  tableUtils.createColumn("razonSocialCliente", "Razón Social", {
+    responsive: ["md"],
+  }),
+  tableUtils.createColumn("rfcCliente", "RFC", { responsive: ["md"] }),
+  tableUtils.createColumn("total", "Total", {
     isNumeric: true,
     render: renderers.moneyRenderer,
   }),
-  actionsColum,
+  tableUtils.createActionsColumn("", "editar", "/cfdi/edit/"),
 ];
 
 export default function CatalogoCfdi() {
@@ -103,13 +98,16 @@ export default function CatalogoCfdi() {
             pull={10}
             placeholder="Buscar..."
             enterButton
-            onChange={(e) => search(e.target.value, cfdis, setFilteredData)}
+            onChange={(e) =>
+              tableUtils.search(e.target.value, cfdis, setFilteredData)
+            }
           />
         </Col>
       </Row>
 
       <Table
         size="small"
+        showSorterTooltip={false}
         columns={columns}
         dataSource={filteredData || cfdis}
       />

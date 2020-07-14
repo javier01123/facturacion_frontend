@@ -6,16 +6,12 @@ import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkErro
 import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import {
-  createColumn,
-  createEditarColumn,
-  search,
-} from "../../utilities/tableUtils";
+import * as tableUtils from "../../utilities/tableUtils";
 
 const columns = [
-  createColumn("razonSocial", "Razón social"),
-  createColumn("rfc", "RFC"),
-  createEditarColumn("Editar", "editar", "/clientes/edit/"),
+  tableUtils.createColumn("razonSocial", "Razón social"),
+  tableUtils.createColumn("rfc", "RFC"),
+  tableUtils.createActionsColumn("", "editar", "/clientes/edit/"),
 ];
 
 export default function CatalogoClientes() {
@@ -72,12 +68,19 @@ export default function CatalogoClientes() {
             pull={10}
             placeholder="Buscar..."
             enterButton
-            onChange={(e) => search(e.target.value, clientes, setFilteredData)}
+            onChange={(e) =>
+              tableUtils.search(e.target.value, clientes, setFilteredData)
+            }
           />
         </Col>
       </Row>
 
-      <Table size="small" columns={columns} dataSource={filteredData || clientes} />
+      <Table
+        size="small"
+        showSorterTooltip={false}
+        columns={columns}
+        dataSource={filteredData || clientes}
+      />
     </Fragment>
   );
 }

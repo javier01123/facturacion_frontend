@@ -22,7 +22,7 @@ export const createColumn = (dataIndex, title, options = {}) => {
   };
 };
 
-export const createEditarColumn = (title, key, route, options = {}) => {
+export const createActionsColumn = (title, key, route, options = {}) => {
   return {
     title: title,
     key: key,

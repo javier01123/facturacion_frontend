@@ -6,15 +6,11 @@ import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkErro
 import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import {
-  createColumn,
-  createEditarColumn,
-  search,
-} from "../../utilities/tableUtils";
+import * as tableUtils from "../../utilities/tableUtils";
 
 const columns = [
-  createColumn("nombre", "Nombre"),
-  createEditarColumn("Editar", "editar", "/sucursales/edit/"),
+  tableUtils.createColumn("nombre", "Nombre"),
+  tableUtils.createActionsColumn("", "editar", "/sucursales/edit/"),
 ];
 
 export default function CatalogoSucursales() {
@@ -27,7 +23,8 @@ export default function CatalogoSucursales() {
   const sucursalRepository = new SucursalRepository();
 
   const getSucursales = () => {
-    sucursalRepository.getSucursales(empresaActualId)      
+    sucursalRepository
+      .getSucursales(empresaActualId)
       .then((sucursales) => {
         setSucursales(sucursales);
       })
@@ -71,13 +68,18 @@ export default function CatalogoSucursales() {
             placeholder="Buscar..."
             enterButton
             onChange={(e) =>
-              search(e.target.value, sucursales, setFilteredData)
+              tableUtils.search(e.target.value, sucursales, setFilteredData)
             }
           />
         </Col>
       </Row>
 
-      <Table size="small" columns={columns} dataSource={filteredData || sucursales} />
+      <Table
+        size="small"
+        showSorterTooltip={false}
+        columns={columns}
+        dataSource={filteredData || sucursales}
+      />
     </Fragment>
   );
 }

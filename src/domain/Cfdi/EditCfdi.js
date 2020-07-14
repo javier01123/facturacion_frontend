@@ -6,13 +6,7 @@ import CfdiRepository from "./CfdiRepository";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
-import {
-  SaveOutlined,
-  EditTwoTone,
-  PlusCircleTwoTone,
-  DeleteTwoTone,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+
 import { useToasts } from "react-toast-notifications";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
@@ -32,7 +26,15 @@ import {
   Modal,
   Space,
   Select,
+  Alert,
 } from "antd";
+import {
+  SaveOutlined,
+  EditTwoTone,
+  PlusCircleTwoTone,
+  DeleteTwoTone,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 
 const { Option } = AutoComplete;
 const { confirm } = Modal;
@@ -139,7 +141,7 @@ export default function EditCfdi() {
   };
 
   const showAgregarPartidaHandler = () => {
-    setPartidaInitValues({});
+    setPartidaInitValues({ cantidad: "", valorUnitario: "", importe: "" });
     setIsPartidaNueva(true);
     setModalPartidaVisible(true);
   };
@@ -209,6 +211,7 @@ export default function EditCfdi() {
       partida.cantidad = formValues.cantidad;
       partida.valorUnitario = formValues.valorUnitario;
       partida.descripcion = formValues.descripcion;
+      partida.importe= formValues.importe;
       setCfdiState(newState);
       setModalPartidaVisible(false);
     }
@@ -232,31 +235,38 @@ export default function EditCfdi() {
 
   return (
     <React.Fragment>
-      {/* {console.log({ cfdiState })} */}
       <Form
         name="basic"
         size="small"
         initialValues={initialValues}
         onFinish={onFinishHandler}
       >
-        <Card
-          // style={{ backgroundColor: "white" }}
-          type="inner"
-          bordered={true}
-        >
+        <Card type="inner" bordered={true}>
           <Form.Item name="id" style={{ display: "none" }}>
             <Input type="hidden" />
           </Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isSubmiting}
-            // style={{float:'right'}}
-          >
-            Guardar Cambios
-          </Button>
+
+          <div className="row">
+            <div>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="middle"
+                icon={<SaveOutlined />}
+                disabled={isSubmiting}
+              >
+                Guardar Cambios
+              </Button>
+            </div>
+            <div>
+              <Alert
+                style={{ height: "32px" }}
+                size="small"
+                message="los cambios son temporales hasta que se guarden manualmente"
+                type="info"
+              />
+            </div>
+          </div>
 
           <div className="row">
             <div className="column">
@@ -283,9 +293,6 @@ export default function EditCfdi() {
                 label="Cliente"
                 name="razonSocialCliente"
                 labelCol={{ span: 7 }}
-                // wrapperCol={{span:5}}
-                // labelCol={{ md: { span: 7 }, sm: { span: 5 } }}
-                // wrapperCol={{ md: { span: 19 }, sm: { span:19 } }}
                 rules={[
                   {
                     required: true,
@@ -352,7 +359,6 @@ export default function EditCfdi() {
           </div>
 
           <Table
-            // tableLayout="auto"
             size="small"
             rowClassName={() => "editable-row"}
             bordered
@@ -360,7 +366,6 @@ export default function EditCfdi() {
             columns={columns}
             pagination={false}
             showSorterTooltip={false}
-            // style={{maxWidth:"800px"}}
           />
           <Button
             type="primary"
@@ -383,8 +388,6 @@ export default function EditCfdi() {
         visible={modalPartidaVisible}
         onOk={modalPartidaOkHandler}
         onCancel={cancelPartidaFormHandler}
-        // confirmLoading={confirmLoading}
-        // onCancel={cancelPartidaFormHandler}
         footer={[
           <Button key="cancel" onClick={cancelPartidaFormHandler}>
             Cancel

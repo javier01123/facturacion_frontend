@@ -58,8 +58,6 @@ const PartidaEdit = (props) => {
           <Form.Item
             label="Cantidad"
             name="cantidad"
-            min={0}
-            step={1}
             rules={[
               {
                 required: true,
@@ -67,14 +65,13 @@ const PartidaEdit = (props) => {
               },
             ]}
           >
-            <InputNumber />
+            <InputNumber min={0} step={0.01} precision={2} />
           </Form.Item>
         </div>
         <div className="column">
           <Form.Item
             label="Valor Unitario"
             name="valorUnitario"
-            min={0}
             rules={[
               {
                 required: true,
@@ -82,7 +79,7 @@ const PartidaEdit = (props) => {
               },
             ]}
           >
-            <InputNumber />
+            <InputNumber min={0} step={0.01} precision={2} />
           </Form.Item>
         </div>
         <div className="column">

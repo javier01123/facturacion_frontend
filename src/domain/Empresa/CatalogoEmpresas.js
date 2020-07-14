@@ -5,17 +5,16 @@ import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkErro
 import { Table, Button, Input, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import EmpresaRepository from "./EmpresaRepository";
-import {
-  createColumn,
-  createEditarColumn,
-  search,
-} from "../../utilities/tableUtils";
+import { useSelector } from "react-redux";
+import * as tableUtils from "../../utilities/tableUtils";
 
 const columns = [
-  createColumn("razonSocial", "Razón social", { responsive: ["md"] }),
-  createColumn("nombreComercial", "Nombre comercial"),
-  createColumn("rfc", "RFC"),
-  createEditarColumn("", "editar", "/empresas/edit/"),
+  tableUtils.createColumn("razonSocial", "Razón social", {
+    responsive: ["md"],
+  }),
+  tableUtils.createColumn("nombreComercial", "Nombre comercial"),
+  tableUtils.createColumn("rfc", "RFC"),
+  tableUtils.createActionsColumn("", "editar", "/empresas/edit/"),
 ];
 
 export default function CatalogoEmpresas() {
@@ -71,15 +70,19 @@ export default function CatalogoEmpresas() {
             pull={10}
             placeholder="Buscar..."
             enterButton
-            // onSearch={(value) => {
-            //   search(value, empresas, setFilteredData);
-            // }}
-            onChange={(e) => search(e.target.value, empresas, setFilteredData)}
+            onChange={(e) =>
+              tableUtils.search(e.target.value, empresas, setFilteredData)
+            }
           />
         </Col>
       </Row>
 
-      <Table size="small" columns={columns} dataSource={filteredData || empresas} />
+      <Table
+        size="small"
+        showSorterTooltip={false}
+        columns={columns}
+        dataSource={filteredData || empresas}
+      />
     </Fragment>
   );
 }
