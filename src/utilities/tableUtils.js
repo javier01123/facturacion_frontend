@@ -1,6 +1,7 @@
 import { Space } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
+import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 
 export const createColumn = (dataIndex, title, options = {}) => {
   let sorterImpl = (a, b) => a[dataIndex].localeCompare(b[dataIndex]);
@@ -21,14 +22,18 @@ export const createColumn = (dataIndex, title, options = {}) => {
   };
 };
 
-export const createEditarColumn = (title, key, route,options={}) => {
+export const createEditarColumn = (title, key, route, options = {}) => {
   return {
     title: title,
     key: key,
+    width:100,
     render: (text, record) => {
       return (
         <Space size="small">
-          <Link to={route + record.id}>Editar</Link>
+          <Link to={route + record.id}>
+            {" "}
+            <EditTwoTone />
+          </Link>
         </Space>
       );
     },

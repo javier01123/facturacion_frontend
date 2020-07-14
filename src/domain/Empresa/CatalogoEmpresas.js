@@ -15,7 +15,7 @@ const columns = [
   createColumn("razonSocial", "Razón social", { responsive: ["md"] }),
   createColumn("nombreComercial", "Nombre comercial"),
   createColumn("rfc", "RFC"),
-  createEditarColumn("Editar", "Editar", "/empresas/edit/"),
+  createEditarColumn("", "editar", "/empresas/edit/"),
 ];
 
 export default function CatalogoEmpresas() {
