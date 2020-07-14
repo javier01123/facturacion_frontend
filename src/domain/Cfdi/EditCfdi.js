@@ -6,13 +6,18 @@ import CfdiRepository from "./CfdiRepository";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
-import { SaveOutlined } from "@ant-design/icons";
+import {
+  SaveOutlined,
+  EditTwoTone,
+  PlusCircleTwoTone,
+  DeleteTwoTone,
+} from "@ant-design/icons";
 import { useToasts } from "react-toast-notifications";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import PartidaEdit from "./PartidaEdit";
-import { createColumn } from "../../utilities/tableUtils";
+import * as renderers from "../../utilities/columnRederers";
 import {
   Form,
   AutoComplete,
@@ -22,12 +27,10 @@ import {
   Table,
   Button,
   Card,
-  Divider,
   message,
   Modal,
   Space,
   Select,
-  Descriptions,
 } from "antd";
 
 const { Option } = AutoComplete;
@@ -55,16 +58,6 @@ export default function EditCfdi() {
   const empresaRepository = new EmpresaRepository();
 
   const loadData = async () => {
-    // cfdiRepository
-    //   .getCfdiById(cfdiId)
-    //   .then((response) => {
-    //     response.fechaEmision = moment(response.fechaEmision);
-    //     setCfdiState(response);
-    //   })
-    //   .catch((error) => {
-    //     setNetworkError(error);
-    //   })
-    //   .finally(() => setIsLoading(false));
     try {
       const cfdi = await cfdiRepository.getCfdiById(cfdiId);
       const empresa = await empresaRepository.getEmpresaById(empresaActualId);
@@ -160,20 +153,36 @@ export default function EditCfdi() {
     setModalPartidaVisible(false);
   };
 
+  const createPartidaColumn = (dataIndex, title, options = {}) => {
+    return {
+      key: dataIndex,
+      dataIndex,
+      title,
+      ...options,
+    };
+  };
   const columns = [
-    createColumn("descripcion", "Descripción", {}),
-    createColumn("cantidad", "Cantidad", { isNumeric: true }),
-    createColumn("valorUnitario", "Valor Unitario", { isNumeric: true }),
-    createColumn("importe", "Importe", { isNumeric: true }),
+    createPartidaColumn("descripcion", "Descripción"),
+    createPartidaColumn("cantidad", "Cantidad"),
+    createPartidaColumn("valorUnitario", "Valor Unitario", {
+      isNumeric: true,
+      render: renderers.numberRenderer,
+    }),
+    createPartidaColumn("importe", "Importe", {
+      isNumeric: true,
+      render: renderers.numberRenderer,
+    }),
     {
-      title: "acciones",
+      title: "",
       key: "acciones",
       render: (text, record) => {
         return (
           <Space size="small">
-            <Button onClick={() => showEditarPartidaHandler(record.id)}>
-              Editar
-            </Button>
+            <Button
+              icon={<EditTwoTone />}
+              onClick={() => showEditarPartidaHandler(record.id)}
+            />
+            <Button icon={<DeleteTwoTone />} />
           </Space>
         );
       },
@@ -185,7 +194,12 @@ export default function EditCfdi() {
 
     if (isPartidaNueva === true) {
       const id = uuidv4();
-      let newState = { ...cfdiState };
+
+      let newState = { ...cfdiState, partidas: [...cfdiState.partidas] };
+      // newState.partidas = [...cfdiState.partidas];
+      //  let newState = {};
+      //  Object.assign(newState,cfdiState);
+      // let newState = clone(cfdiState);
       newState.partidas.push({ ...formValues, id: id, key: id });
       setCfdiState(newState);
       setModalPartidaVisible(false);
@@ -211,10 +225,10 @@ export default function EditCfdi() {
       >
         <Card
           // style={{ backgroundColor: "white" }}
-          // title="Generar CFDI"
+          type="inner"
           bordered={true}
         >
-          <Form.Item name="id">
+          <Form.Item name="id" style={{ display: "none" }}>
             <Input type="hidden" />
           </Form.Item>
           <Button
@@ -223,109 +237,123 @@ export default function EditCfdi() {
             size="middle"
             icon={<SaveOutlined />}
             disabled={isSubmiting}
+            // style={{float:'right'}}
           >
             Guardar Cambios
           </Button>
-          <Divider orientation="left">Emisor</Divider>
 
-          <Form.Item label="Razón Social">
-            <span className="ant-form-text">{empresa.razonSocial}</span>
-          </Form.Item>
+          <div className="row">
+            <div className="column">
+              <Form.Item label="Emisor" labelCol={{ span: 7 }}>
+                <span className="ant-form-text">{empresa.razonSocial}</span>
+                <br />
+                <span>{empresa.rfc}</span>
+              </Form.Item>
+            </div>
+            <div className="column">
+              <Form.Item label="Serie">
+                <span className="ant-form-text">{initialValues.serie}</span>
+              </Form.Item>
 
-          <Form.Item label="R.F.C">
-            <span className="ant-form-text">{empresa.rfc}</span>
-          </Form.Item>
+              <Form.Item label="Folio">
+                <span className="ant-form-text">{initialValues.folio}</span>
+              </Form.Item>
+            </div>
+          </div>
 
-          <Divider orientation="left">Datos Fiscales</Divider>
+          <div className="row">
+            <div className="column">
+              <Form.Item
+                label="Cliente"
+                name="razonSocialCliente"
+                labelCol={{ span: 7 }}
+                // wrapperCol={{span:5}}
+                // labelCol={{ md: { span: 7 }, sm: { span: 5 } }}
+                // wrapperCol={{ md: { span: 19 }, sm: { span:19 } }}
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: "obligatorio",
+                  },
+                ]}
+              >
+                <AutoComplete
+                  onSearch={handleSearch}
+                  onSelect={(val, option) => onSelect(val, option)}
+                  placeholder="Seleccione el cliente"
+                >
+                  {searchClienteResult &&
+                    searchClienteResult.map((cliente) => (
+                      <Option key={cliente.id} value={cliente.razonSocial}>
+                        {cliente.razonSocial}
+                      </Option>
+                    ))}
+                </AutoComplete>
+              </Form.Item>
+            </div>
+            <div className="column">
+              <Form.Item
+                label="Fecha de Emisión"
+                name="fechaEmision"
+                rules={[
+                  {
+                    required: true,
+                    message: "obligatorio",
+                  },
+                ]}
+              >
+                <DatePicker
+                  showTime={{ format: "HH:mm" }}
+                  format="YYYY-MM-DD HH:mm"
+                />
+              </Form.Item>
+            </div>
+          </div>
 
-          <Form.Item label="Serie">
-            <span className="ant-form-text">{initialValues.serie}</span>
-          </Form.Item>
-
-          <Form.Item label="Folio">
-            <span className="ant-form-text">{initialValues.folio}</span>
-          </Form.Item>
-
-          <Form.Item
-            label="Fecha de Emisión"
-            name="fechaEmision"
-            rules={[
-              {
-                required: true,
-                message: "obligatorio",
-              },
-            ]}
-          >
-            <DatePicker
-              showTime={{ format: "HH:mm" }}
-              format="YYYY-MM-DD HH:mm"
-            />
-          </Form.Item>
-
-          <Divider orientation="left">Pago</Divider>
-
-          <Form.Item
-            label="Método de pago"
-            name="metodoDePago"
-            rules={[
-              // {
-              //   enum: [1, 2],
-              //   message: "seleccione una opción",
-              // },
-              {
-                required:true,
-                message:"obligatorio",
-              }
-            ]}
-          >
-            <Select allowClear placeholder="seleccione una opción">
-              <Option value={1}>PUE - Pago en una sola exhibición</Option>
-              <Option value={2}>PPD - Pago en parcialidades o diferido</Option>
-            </Select>
-          </Form.Item>
-
-          <Divider orientation="left">Cliente</Divider>
-
-          <Form.Item
-            label="Cliente"
-            name="razonSocialCliente"
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: "obligatorio",
-              },
-            ]}
-          >
-            <AutoComplete
-              onSearch={handleSearch}
-              onSelect={(val, option) => onSelect(val, option)}
-              placeholder="Seleccione el cliente"
-            >
-              {searchClienteResult &&
-                searchClienteResult.map((cliente) => (
-                  <Option key={cliente.id} value={cliente.razonSocial}>
-                    {cliente.razonSocial}
+          <div className="row">
+            <div className="column">
+              <Form.Item
+                label="Método de pago"
+                name="metodoDePago"
+                labelCol={{ span: 7 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "obligatorio",
+                  },
+                ]}
+              >
+                <Select allowClear placeholder="seleccione una opción">
+                  <Option value={1}>PUE - Pago en una sola exhibición</Option>
+                  <Option value={2}>
+                    PPD - Pago en parcialidades o diferido
                   </Option>
-                ))}
-            </AutoComplete>
-          </Form.Item>
+                </Select>
+              </Form.Item>
+            </div>
+            <div className="column"></div>
+          </div>
 
-          <Divider orientation="left">Partidas</Divider>
-          <Button
-            type="primary"
-            htmlType="button"
-            onClick={showAgregarPartidaHandler}
-          >
-            Agregar Partida
-          </Button>
           <Table
-            // components={components}
+            // tableLayout="auto"
             rowClassName={() => "editable-row"}
             bordered
             dataSource={cfdiState.partidas}
             columns={columns}
+            pagination={false}
+            showSorterTooltip={false}
+            // style={{maxWidth:"800px"}}
           />
+          <Button
+            type="primary"
+            htmlType="button"
+            onClick={showAgregarPartidaHandler}
+            style={{ float: "right" }}
+            icon={<PlusCircleTwoTone />}
+          >
+            Agregar Partida
+          </Button>
         </Card>
 
         {validationErrors ? (
@@ -337,6 +365,7 @@ export default function EditCfdi() {
         title="Partida"
         visible={modalPartidaVisible}
         onOk={modalPartidaOkHandler}
+        onCancel={cancelPartidaFormHandler}
         // confirmLoading={confirmLoading}
         // onCancel={cancelPartidaFormHandler}
         footer={[

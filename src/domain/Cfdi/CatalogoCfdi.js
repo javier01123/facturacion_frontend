@@ -3,30 +3,51 @@ import CfdiRepository from "./CfdiRepository";
 import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
-import { Table, Button, Input, Row, Col } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Table, Button, Input, Row, Col, Space } from "antd";
+import { PlusOutlined, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   createColumn,
   createEditarColumn,
   search,
 } from "../../utilities/tableUtils";
-import moment from "moment";
+import * as renderers from "../../utilities/columnRederers";
+
+const actionsColum = {
+  title: "",
+  key: "acciones",
+  render: (text, record) => {
+    return (
+      <React.Fragment>
+        <Space size="small">
+          <Link to={`/cfdi/edit/${record.id}`}>
+            <EditTwoTone />
+          </Link>
+        </Space>
+        <Space size="small">
+          <Button icon={<DeleteTwoTone />} />
+        </Space>
+      </React.Fragment>
+    );
+  },
+};
 
 const columns = [
   createColumn("serie", "Serie"),
   createColumn("folio", "Folio", { isNumeric: true }),
   createColumn("fechaEmision", "Fecha de Emisión", {
-    render: (value) => moment(value).format("DD-MM-YYYY"),
+    responsive: ["md"],
+    render: renderers.dateRenderer,
   }),
-  createColumn("razonSocialCliente", "Razón social"),
-  createColumn("rfcCliente", "RFC"),
+  createColumn("razonSocialCliente", "Razón social", { responsive: ["md"] }),
+  createColumn("rfcCliente", "RFC", { responsive: ["md"] }),
 
   createColumn("total", "Total", {
     isNumeric: true,
-    render: (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+    render: renderers.moneyRenderer,
   }),
-  createEditarColumn("Editar", "editar", "/cfdi/edit/", { width: 70 }),
+  actionsColum,
 ];
 
 export default function CatalogoCfdi() {
@@ -89,10 +110,7 @@ export default function CatalogoCfdi() {
         </Col>
       </Row>
 
-      <Table      
-        columns={columns}
-        dataSource={filteredData || cfdis}
-      />
+      <Table columns={columns} dataSource={filteredData || cfdis} />
     </Fragment>
   );
 }

@@ -17,6 +17,7 @@ import {
   watchEmpresaChanged,
 } from "./store/sagas/watcher";
 import "antd/dist/antd.css";
+import "./App.css";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
