@@ -11,6 +11,7 @@ import {
   EditTwoTone,
   PlusCircleTwoTone,
   DeleteTwoTone,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { useToasts } from "react-toast-notifications";
 import { v4 as uuidv4 } from "uuid";
@@ -34,6 +35,7 @@ import {
 } from "antd";
 
 const { Option } = AutoComplete;
+const { confirm } = Modal;
 // const { SelectOption } = Select;
 
 export default function EditCfdi() {
@@ -118,7 +120,7 @@ export default function EditCfdi() {
       .then(async (response) => {
         await loadData();
         setModalPartidaVisible(false);
-        message.success("cambios guardados exitosamente!", 0.8);
+        message.success("cambios guardados", 0.8);
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -183,7 +185,11 @@ export default function EditCfdi() {
               icon={<EditTwoTone />}
               onClick={() => showEditarPartidaHandler(record.id)}
             />
-            <Button type="link" icon={<DeleteTwoTone />} />
+            <Button
+              type="link"
+              icon={<DeleteTwoTone />}
+              onClick={() => confirmBorrarPartida(record)}
+            />
           </Space>
         );
       },
@@ -191,16 +197,9 @@ export default function EditCfdi() {
   ];
 
   const submitPartidaFormHandler = (formValues) => {
-    console.log({ isPartidaNueva });
-
     if (isPartidaNueva === true) {
       const id = uuidv4();
-
       let newState = { ...cfdiState, partidas: [...cfdiState.partidas] };
-      // newState.partidas = [...cfdiState.partidas];
-      //  let newState = {};
-      //  Object.assign(newState,cfdiState);
-      // let newState = clone(cfdiState);
       newState.partidas.push({ ...formValues, id: id, key: id });
       setCfdiState(newState);
       setModalPartidaVisible(false);
@@ -213,6 +212,22 @@ export default function EditCfdi() {
       setCfdiState(newState);
       setModalPartidaVisible(false);
     }
+  };
+
+  const confirmBorrarPartida = (partida) => {
+    confirm({
+      title: "Desea eliminar esta partida?",
+      icon: <ExclamationCircleOutlined />,
+      content: partida.descripcion,
+      onOk() {
+        let newState = { ...cfdiState, partidas: [...cfdiState.partidas] };
+        newState.partidas = newState.partidas.filter(
+          (p) => p.id !== partida.id
+        );
+        setCfdiState(newState);
+      },
+      onCancel() {},
+    });
   };
 
   return (
