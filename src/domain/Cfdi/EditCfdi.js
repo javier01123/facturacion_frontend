@@ -179,10 +179,11 @@ export default function EditCfdi() {
         return (
           <Space size="small">
             <Button
+              type="link"
               icon={<EditTwoTone />}
               onClick={() => showEditarPartidaHandler(record.id)}
             />
-            <Button icon={<DeleteTwoTone />} />
+            <Button type="link" icon={<DeleteTwoTone />} />
           </Space>
         );
       },
@@ -337,6 +338,7 @@ export default function EditCfdi() {
 
           <Table
             // tableLayout="auto"
+            size="small"
             rowClassName={() => "editable-row"}
             bordered
             dataSource={cfdiState.partidas}

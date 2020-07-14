@@ -16,7 +16,7 @@ export const createColumn = (dataIndex, title, options = {}) => {
     title,
     defaultSortOrder: "ascend",
     sortDirections: ["descend", "ascend"],
-    ellipsis: true,
+    // ellipsis: true,
     sorter: sorterImpl,
     ...options,
   };
@@ -26,15 +26,13 @@ export const createEditarColumn = (title, key, route, options = {}) => {
   return {
     title: title,
     key: key,
-    width:100,
+    width: 100,
     render: (text, record) => {
       return (
-        <Space size="small">
-          <Link to={route + record.id}>
-            {" "}
-            <EditTwoTone />
-          </Link>
-        </Space>
+        <Link size="small" to={route + record.id}>
+          {" "}
+          <EditTwoTone />
+        </Link>
       );
     },
     ...options,

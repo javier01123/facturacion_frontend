@@ -77,7 +77,7 @@ export default function CatalogoSucursales() {
         </Col>
       </Row>
 
-      <Table columns={columns} dataSource={filteredData || sucursales} />
+      <Table size="small" columns={columns} dataSource={filteredData || sucursales} />
     </Fragment>
   );
 }

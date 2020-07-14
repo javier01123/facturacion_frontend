@@ -17,17 +17,15 @@ import * as renderers from "../../utilities/columnRederers";
 const actionsColum = {
   title: "",
   key: "acciones",
+  width: 100,
   render: (text, record) => {
     return (
       <React.Fragment>
-        <Space size="small">
-          <Link to={`/cfdi/edit/${record.id}`}>
-            <EditTwoTone />
-          </Link>
-        </Space>
-        <Space size="small">
-          <Button icon={<DeleteTwoTone />} />
-        </Space>
+        <Link size="small" to={`/cfdi/edit/${record.id}`}>
+          <EditTwoTone />
+        </Link>
+
+        <Button type="link" size="small" icon={<DeleteTwoTone />} />
       </React.Fragment>
     );
   },
@@ -110,7 +108,11 @@ export default function CatalogoCfdi() {
         </Col>
       </Row>
 
-      <Table columns={columns} dataSource={filteredData || cfdis} />
+      <Table
+        size="small"
+        columns={columns}
+        dataSource={filteredData || cfdis}
+      />
     </Fragment>
   );
 }

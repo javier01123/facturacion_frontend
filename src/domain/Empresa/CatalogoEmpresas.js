@@ -79,7 +79,7 @@ export default function CatalogoEmpresas() {
         </Col>
       </Row>
 
-      <Table columns={columns} dataSource={filteredData || empresas} />
+      <Table size="small" columns={columns} dataSource={filteredData || empresas} />
     </Fragment>
   );
 }

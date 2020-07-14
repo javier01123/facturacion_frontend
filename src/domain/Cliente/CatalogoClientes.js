@@ -77,7 +77,7 @@ export default function CatalogoClientes() {
         </Col>
       </Row>
 
-      <Table columns={columns} dataSource={filteredData || clientes} />
+      <Table size="small" columns={columns} dataSource={filteredData || clientes} />
     </Fragment>
   );
 }
