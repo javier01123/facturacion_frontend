@@ -11,7 +11,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import CustomSpinner from "./components/CustomSpinner/CustomSpinner";
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastProvider } from "react-toast-notifications";
 import {
   watchEmpresasReload,
   watchEmpresaChanged,
@@ -47,17 +47,12 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={<CustomSpinner />} persistor={persistor}>
         <ToastProvider>
-        <Router history={history}>
-          <Switch>
-            <Route path="/login">
-              <Login />
-            </Route>
-
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-        </Router>
+          <Router history={history}>
+            <Switch>
+              <Route path="/login" component={Login} />
+              <Route path="/" component={Home} />
+            </Switch>
+          </Router>
         </ToastProvider>
       </PersistGate>
     </Provider>

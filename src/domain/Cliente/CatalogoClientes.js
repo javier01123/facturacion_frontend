@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import { Table, Button, Input, Row, Col } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusCircleTwoTone } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import * as tableUtils from "../../utilities/tableUtils";
 
@@ -50,16 +50,16 @@ export default function CatalogoClientes() {
 
   return (
     <Fragment>
-      <Row>
+       <Row style={{padding:'5px 0px'}}>
         <Col span={14}>
           <Button
             type="primary"
-            icon={<PlusOutlined />}
+            icon={<PlusCircleTwoTone />}
             onClick={addClienteHandler}
             span={10}
             push={14}
           >
-            Agregar Cliente
+            Agregar
           </Button>
         </Col>
         <Col span={10}>

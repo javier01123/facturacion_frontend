@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import ClienteRepository from "./ClienteRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
@@ -39,6 +39,8 @@ export default function CreateCliente() {
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const clienteRepository = new ClienteRepository();
   const { addToast } = useToasts();
+  // const abortController = new AbortController();
+  // const abortSignal = abortController.signal;
 
   const onFinish = (values) => {
     const clienteToPost = {
@@ -49,10 +51,12 @@ export default function CreateCliente() {
 
     setIsSubmiting(true);
 
+    let clienteCreated = false;
+
     clienteRepository
       .createCliente(clienteToPost)
       .then((response) => {
-        history.push("/clientes");
+        clienteCreated = true;
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -61,9 +65,19 @@ export default function CreateCliente() {
           addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
-      .finally(() => setIsSubmiting(false));
+      .finally(() => {
+        setIsSubmiting(false);
+        if (clienteCreated === true) history.push("/clientes");
+      });
   };
 
+  // const cancelSubscriptions = () => {
+  //   clienteRepository.abortAll();
+  // };
+
+  // useEffect(() => {
+  //   return cancelSubscriptions;
+  // }, []);
   return (
     <Form
       {...layout}
@@ -95,6 +109,7 @@ export default function CreateCliente() {
         <Form.Item
           label="RFC"
           name="rfc"
+          normalize={(value) => (value || "").toUpperCase()}
           rules={[
             {
               required: true,

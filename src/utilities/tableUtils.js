@@ -1,7 +1,6 @@
-import { Space } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { EditTwoTone } from "@ant-design/icons";
 
 export const createColumn = (dataIndex, title, options = {}) => {
   let sorterImpl = (a, b) => a[dataIndex].localeCompare(b[dataIndex]);

@@ -7,6 +7,9 @@ const instance = axios.create({
   withCredentials: true,
 });
 
+instance.CancelToken= axios.CancelToken;
+instance.isCancel = axios.isCancel;
+
 instance.interceptors.request.use(
   (request) => {
     console.log({ request });

@@ -4,26 +4,11 @@ import { useHistory } from "react-router-dom";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import { Table, Button, Input, Row, Col } from "antd";
-import { PlusOutlined, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { PlusCircleTwoTone, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as tableUtils from "../../utilities/tableUtils";
 import * as renderers from "../../utilities/columnRederers";
-
-// const actionsColum = {
-//   title: "",
-//   key: "acciones",
-//   width: 100,
-//   render: (text, record) => {
-//     return (
-//       <React.Fragment>
-//         <Link size="small" to={`/cfdi/edit/${record.id}`}>
-//           <EditTwoTone />
-//         </Link>
-//       </React.Fragment>
-//     );
-//   },
-// };
 
 const columns = [
   tableUtils.createColumn("serie", "Serie"),
@@ -80,16 +65,16 @@ export default function CatalogoCfdi() {
 
   return (
     <Fragment>
-      <Row>
+      <Row style={{padding:'5px 0px'}}>
         <Col span={14}>
           <Button
             type="primary"
-            icon={<PlusOutlined />}
+            icon={<PlusCircleTwoTone />}
             onClick={addCfdiHandler}
             span={10}
             push={14}
           >
-            Agregar Cfdi
+            Agregar
           </Button>
         </Col>
         <Col span={10}>

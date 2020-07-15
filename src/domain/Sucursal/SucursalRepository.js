@@ -61,4 +61,18 @@ export default class SucursalRepository {
         });
     });
   }
+
+  getSiguienteFolioDisponible(sucursalId) {
+    return new Promise((resolve, reject) => {
+      axios_instance
+        .get(`/sucursales/${sucursalId}/siguiente-folio`)
+        .then((response) => {
+          const siguienteFolio = response.data;
+          resolve(siguienteFolio);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
 }

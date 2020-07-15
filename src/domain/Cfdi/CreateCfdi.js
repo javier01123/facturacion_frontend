@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import CfdiRepository from "./CfdiRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
+import { SaveOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { useToasts } from "react-toast-notifications";
+import ClienteRepository from "./../Cliente/ClienteRepository";
+import moment from "moment";
 import {
   Form,
   AutoComplete,
@@ -11,15 +16,8 @@ import {
   InputNumber,
   Button,
   Card,
-  Row,
-  Col,
 } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
-import * as patterns from "../../utilities/regexPatterns";
-import { useToasts } from "react-toast-notifications";
-import ClienteRepository from "./../Cliente/ClienteRepository";
-import moment from "moment";
+import SucursalRepository from "../Sucursal/SucursalRepository";
 
 const layout = {
   labelCol: {
@@ -51,7 +49,23 @@ export default function CreateCfdi() {
   const sucursalActualId = useSelector((state) => state.sucursalActualId);
   const cfdiRepository = new CfdiRepository();
   const clienteRepository = new ClienteRepository();
+  const sucursalRepository = new SucursalRepository();
   const { addToast } = useToasts();
+  const [form] = Form.useForm();
+
+  const loadData = async () => {
+    var siguienteFolio = await sucursalRepository.getSiguienteFolioDisponible(
+      sucursalActualId
+    );
+
+    form.setFieldsValue({ folio: siguienteFolio });
+
+    initialValues.folio = siguienteFolio;
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleSearch = async (value) => {
     let results = await clienteRepository.searchClientes(
@@ -75,11 +89,12 @@ export default function CreateCfdi() {
     };
 
     setIsSubmiting(true);
+    let cfdiCreated = false;
 
     cfdiRepository
       .createCfdi(cfdiToPost)
       .then((response) => {
-        history.push(`/cfdi/edit/${cfdiToPost.Id}`);
+        cfdiCreated=true;
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -88,11 +103,15 @@ export default function CreateCfdi() {
           addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
-      .finally(() => setIsSubmiting(false));
+      .finally(() => {
+        setIsSubmiting(false);
+        if (cfdiCreated === true) history.push(`/cfdi/edit/${cfdiToPost.Id}`);
+      });
   };
 
   return (
     <Form
+      form={form}
       {...layout}
       name="basic"
       size="small"
@@ -140,7 +159,7 @@ export default function CreateCfdi() {
         >
           <DatePicker
             showTime={{ format: "HH:mm" }}
-            format="YYYY-MM-DD HH:mm"
+            format="DD-MM-YYYY HH:mm"
           />
         </Form.Item>
         <Form.Item

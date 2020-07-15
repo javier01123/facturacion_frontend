@@ -18,7 +18,6 @@ import {
   AutoComplete,
   DatePicker,
   Input,
-  InputNumber,
   Table,
   Button,
   Card,
@@ -26,7 +25,6 @@ import {
   Modal,
   Space,
   Select,
-  Alert,
 } from "antd";
 import {
   SaveOutlined,
@@ -211,7 +209,7 @@ export default function EditCfdi() {
       partida.cantidad = formValues.cantidad;
       partida.valorUnitario = formValues.valorUnitario;
       partida.descripcion = formValues.descripcion;
-      partida.importe= formValues.importe;
+      partida.importe = formValues.importe;
       setCfdiState(newState);
       setModalPartidaVisible(false);
     }
@@ -258,14 +256,6 @@ export default function EditCfdi() {
                 Guardar Cambios
               </Button>
             </div>
-            <div>
-              <Alert
-                style={{ height: "32px" }}
-                size="small"
-                message="los cambios son temporales hasta que se guarden manualmente"
-                type="info"
-              />
-            </div>
           </div>
 
           <div className="row">
@@ -277,12 +267,10 @@ export default function EditCfdi() {
               </Form.Item>
             </div>
             <div className="column">
-              <Form.Item label="Serie">
-                <span className="ant-form-text">{initialValues.serie}</span>
-              </Form.Item>
-
-              <Form.Item label="Folio">
-                <span className="ant-form-text">{initialValues.folio}</span>
+              <Form.Item label="Folio" labelCol={{ span: 7 }}>
+                <span className="ant-form-text">
+                  {initialValues.serie} - {initialValues.folio}
+                </span>
               </Form.Item>
             </div>
           </div>
@@ -319,6 +307,7 @@ export default function EditCfdi() {
               <Form.Item
                 label="Fecha de Emisión"
                 name="fechaEmision"
+                labelCol={{ span: 7 }}
                 rules={[
                   {
                     required: true,
@@ -328,7 +317,7 @@ export default function EditCfdi() {
               >
                 <DatePicker
                   showTime={{ format: "HH:mm" }}
-                  format="YYYY-MM-DD HH:mm"
+                  format="DD-MM-YYYY HH:mm"
                 />
               </Form.Item>
             </div>

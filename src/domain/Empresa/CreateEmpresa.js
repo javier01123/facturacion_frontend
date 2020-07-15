@@ -39,11 +39,12 @@ const CreateEmpresa = () => {
     };
 
     setIsSubmiting(true);
+    let empresaCreated=false;
 
     empresaRepository
       .createEmpresa(empresaToPost)
       .then((response) => {
-        history.push("/empresas");
+       empresaCreated=true;
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -52,7 +53,10 @@ const CreateEmpresa = () => {
           addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
-      .finally(() => setIsSubmiting(false));
+      .finally(() => {
+        setIsSubmiting(false);
+        if(empresaCreated===true)  history.push("/empresas");
+      });
   };
 
   const isRfcDisponibleHandler = async (rule, value, callback) => {

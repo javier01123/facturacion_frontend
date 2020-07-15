@@ -1,6 +1,13 @@
 import axios_instance from "../../services/httpClient/axios_instance";
 
 export default class ClienteRepository {
+  constructor() {
+    console.log({axios_instance});
+    this.source = axios_instance.CancelToken.source();
+  }
+
+  abortAll() {}
+
   getClienteById(clienteId) {
     return new Promise((resolve, reject) => {
       axios_instance
@@ -38,7 +45,7 @@ export default class ClienteRepository {
   createCliente(cliente) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post("/clientes", cliente)
+        .post("/clientes", cliente, { cancelToken: this.source.token })
         .then((response) => {
           resolve(response);
         })
@@ -64,9 +71,9 @@ export default class ClienteRepository {
   searchClientes(empresaId, searchTerm) {
     return new Promise((resolve, reject) => {
       axios_instance
-        .post(`empresas/${empresaId}/clientes/search`,{searchTerm})
+        .post(`empresas/${empresaId}/clientes/search`, { searchTerm })
         .then((response) => {
-          const clientes = response.data;        
+          const clientes = response.data;
           resolve(clientes);
         })
         .catch((error) => {

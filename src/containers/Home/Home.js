@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, Breadcrumb, Select } from "antd";
+import { Layout, Menu,  Select } from "antd";
 import { Route, Switch } from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import ErrorBoundary from "../../components/ErrorHandlers/ErrorBoundary/ErrorBoundary";
@@ -21,7 +21,6 @@ import axios_instance from "../../services/httpClient/axios_instance";
 import CatalogoCfdi from "../../domain/Cfdi/CatalogoCfdi";
 import CreateCfdi from "../../domain/Cfdi/CreateCfdi";
 import EditCfdi from "../../domain/Cfdi/EditCfdi";
-// import { NodeExpandOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 const { Header, Content, Footer } = Layout;
@@ -53,7 +52,6 @@ const Home = () => {
       style={{ padding: 0, margin: 0, flex: "none !important", width: "100%" }}
     >
       <Header>
-        {/* <div className="logo" /> */}
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1">
             <Link to="/">Home</Link>
@@ -119,11 +117,7 @@ const Home = () => {
         </Menu>
       </Header>
       <Content style={{ padding: "0 50px" }}>
-        <Breadcrumb style={{ margin: "16px 0" }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
+         <br/>
         <div className="site-layout-content">
           <ErrorBoundary>
             <Switch>

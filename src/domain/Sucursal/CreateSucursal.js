@@ -47,11 +47,12 @@ export default function CreateSucursal() {
     };
 
     setIsSubmiting(true);
+    let sucursalCreated = false;
 
     sucursalRepository
       .createSucursal(sucursalToPost)
       .then((response) => {
-        history.push("/sucursales");
+        sucursalCreated = true;
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -60,7 +61,10 @@ export default function CreateSucursal() {
           addToast(error.message, { appearance: "error", autoDismiss: true });
         }
       })
-      .finally(() => setIsSubmiting(false));
+      .finally(() => {
+        setIsSubmiting(false);
+        if (sucursalCreated === true) history.push("/sucursales");
+      });
   };
 
   return (
