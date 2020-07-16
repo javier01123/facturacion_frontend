@@ -4,9 +4,10 @@ import SucursalRepository from "./SucursalRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card, Row, Col } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { SaveOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useToasts } from "react-toast-notifications";
+import { Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -16,13 +17,7 @@ const layout = {
     span: 19,
   },
 };
-const tailLayout = {
-  wrapperCol: {
-    offset: 5,
-    span: 19,
-  },
-};
-
+ 
 const domicilioLayout = {
   labelCol: {
     span: 7,
@@ -75,6 +70,23 @@ export default function CreateSucursal() {
       initialValues={initialValues}
       onFinish={onFinish}
     >
+      <div>
+        <Button type="default" size="middle" icon={<ArrowLeftOutlined />}>
+          <Link to="/sucursales"> Regresar</Link>
+        </Button>
+
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="middle"
+          icon={<SaveOutlined />}
+          disabled={isSubmiting}
+          style={{ margin: "5px 5px" }}
+        >
+          Registrar Sucursal
+        </Button>
+      </div>
+
       <Card style={{ backgroundColor: "white" }} title="Datos" bordered={true}>
         <Form.Item
           label="Nombre"
@@ -148,20 +160,7 @@ export default function CreateSucursal() {
       {validationErrors ? (
         <ValidationErrors validationErrors={validationErrors} />
       ) : null}
-
-      <Card>
-        <Form.Item {...tailLayout}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isSubmiting}
-          >
-            Registrar Sucursal
-          </Button>
-        </Form.Item>
-      </Card>
+       
     </Form>
   );
 }

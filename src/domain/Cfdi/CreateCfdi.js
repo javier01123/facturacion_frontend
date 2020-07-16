@@ -3,11 +3,13 @@ import { useHistory } from "react-router-dom";
 import CfdiRepository from "./CfdiRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
-import { SaveOutlined } from "@ant-design/icons";
+import { SaveOutlined,ArrowLeftOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 import ClienteRepository from "./../Cliente/ClienteRepository";
 import moment from "moment";
+import SucursalRepository from "../Sucursal/SucursalRepository";
+import { Link } from "react-router-dom";
 import {
   Form,
   Select,
@@ -17,7 +19,6 @@ import {
   Button,
   Card,
 } from "antd";
-import SucursalRepository from "../Sucursal/SucursalRepository";
 
 const layout = {
   labelCol: {
@@ -27,13 +28,7 @@ const layout = {
     span: 19,
   },
 };
-
-const tailLayout = {
-  wrapperCol: {
-    offset: 5,
-    span: 19,
-  },
-};
+ 
 
 const { Option } = Select;
 
@@ -81,11 +76,7 @@ export default function CreateCfdi() {
 
     setResult(results);
   };
-
-  // const onSelect = (val, option) => {
-  //   setClienteId(option.key);
-  // };
-
+ 
   const onFinish = (values) => {
     const cfdiToPost = {
       ...values,
@@ -133,6 +124,23 @@ export default function CreateCfdi() {
       initialValues={initialValues}
       onFinish={onFinish}
     >
+
+<div>
+          <Button type="default" size="middle" icon={<ArrowLeftOutlined />}>
+            <Link to="/cfdi"> Regresar</Link>
+          </Button>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="middle"
+            icon={<SaveOutlined />}
+            disabled={isSubmiting}
+            style={{ margin: "5px 5px" }}
+          >
+            Crear Cfdi
+          </Button>
+        </div>
       <Card
         style={{ backgroundColor: "white" }}
         title="Datos fiscales"
@@ -148,20 +156,7 @@ export default function CreateCfdi() {
               message: "obligatorio",
             },
           ]}
-        >
-          {/* <AutoComplete
-            onSearch={handleSearch}
-            onSelect={(val, option) => onSelect(val, option)}
-            placeholder="Busque el cliente"
-            allowClear
-          >
-            {result.map((cliente) => (
-              <Option key={cliente.id} value={cliente.razonSocial}>
-                {cliente.razonSocial}
-              </Option>
-            ))}
-          </AutoComplete> */}
-
+        > 
           <Select
             allowClear
             showSearch
@@ -214,7 +209,7 @@ export default function CreateCfdi() {
 
         <Form.Item
           label="Folio"
-          name="folio"
+          name="folio"         
           rules={[
             {
               required: true,
@@ -226,27 +221,14 @@ export default function CreateCfdi() {
             },
           ]}
         >
-          <InputNumber />
+          <InputNumber   disabled/>
         </Form.Item>
       </Card>
 
       {validationErrors ? (
         <ValidationErrors validationErrors={validationErrors} />
       ) : null}
-
-      <Card>
-        <Form.Item {...tailLayout}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isSubmiting}
-          >
-            Crear Cfdi
-          </Button>
-        </Form.Item>
-      </Card>
+    
     </Form>
   );
 }

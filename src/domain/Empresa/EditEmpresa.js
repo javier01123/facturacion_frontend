@@ -5,9 +5,10 @@ import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
 import NetworkError from "../../components/ErrorScreens/NetworkError/NetworkError";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { Form, Input, Button, Card } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { SaveOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import * as patterns from "../../utilities/regexPatterns";
 import { useToasts } from "react-toast-notifications";
+import { Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -88,6 +89,23 @@ export default function EditEmpresa() {
       initialValues={initialValues}
       onFinish={onFinishHandler}
     >
+      <div>
+        <Button type="default" size="middle" icon={<ArrowLeftOutlined />}>
+          <Link to="/empresas"> Regresar</Link>
+        </Button>
+
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="middle"
+          icon={<SaveOutlined />}
+          disabled={isSubmiting}
+          style={{ margin: "5px 5px" }}
+        >
+          Guardar
+        </Button>
+      </div>
+
       <Card
         style={{ backgroundColor: "white" }}
         title="Datos fiscales"
@@ -97,15 +115,13 @@ export default function EditEmpresa() {
           label="Razón Social"
           name="razonSocial"
           normalize={(value) => (value || "").toUpperCase()}
-          rules={
-            [
-              {
-                required: true,
-                whitespace: true,
-                message: "obligatorio",
-              },
-            ]
-          }
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "obligatorio",
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -144,20 +160,7 @@ export default function EditEmpresa() {
       {validationErrors ? (
         <ValidationErrors validationErrors={validationErrors} />
       ) : null}
-
-      <Card>
-        <Form.Item {...tailLayout}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isLoading || isSubmiting}
-          >
-            Guardar Cambios
-          </Button>
-        </Form.Item>
-      </Card>
+       
     </Form>
   );
 }

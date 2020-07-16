@@ -3,10 +3,11 @@ import { useHistory } from "react-router-dom";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { SaveOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import EmpresaRepository from "./EmpresaRepository";
 import * as patterns from "../../utilities/regexPatterns";
 import { useToasts } from "react-toast-notifications";
+import { Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -39,12 +40,12 @@ const CreateEmpresa = () => {
     };
 
     setIsSubmiting(true);
-    let empresaCreated=false;
+    let empresaCreated = false;
 
     empresaRepository
       .createEmpresa(empresaToPost)
       .then((response) => {
-       empresaCreated=true;
+        empresaCreated = true;
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -55,13 +56,12 @@ const CreateEmpresa = () => {
       })
       .finally(() => {
         setIsSubmiting(false);
-        if(empresaCreated===true)  history.push("/empresas");
+        if (empresaCreated === true) history.push("/empresas");
       });
   };
 
   const isRfcDisponibleHandler = async (rule, value, callback) => {
-
-    if(!value){
+    if (!value) {
       return;
     }
 
@@ -86,6 +86,23 @@ const CreateEmpresa = () => {
       initialValues={initialValues}
       onFinish={onFinish}
     >
+      <div>
+        <Button type="default" size="middle" icon={<ArrowLeftOutlined />}>
+          <Link to="/empresas"> Regresar</Link>
+        </Button>
+
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="middle"
+          icon={<SaveOutlined />}
+          disabled={isSubmiting}
+          style={{ margin: "5px 5px" }}
+        >
+          Registrar Empresa
+        </Button>
+      </div>
+
       <Card
         style={{ backgroundColor: "white" }}
         title="Datos fiscales"
@@ -122,7 +139,7 @@ const CreateEmpresa = () => {
 
         <Form.Item
           label="RFC"
-          name="rfc"          
+          name="rfc"
           normalize={(value) => (value || "").toUpperCase()}
           rules={[
             {
@@ -145,20 +162,7 @@ const CreateEmpresa = () => {
       {validationErrors ? (
         <ValidationErrors validationErrors={validationErrors} />
       ) : null}
-
-      <Card>
-        <Form.Item {...tailLayout}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isSubmiting}
-          >
-            Registrar Empresa
-          </Button>
-        </Form.Item>
-      </Card>
+    
     </Form>
   );
 };

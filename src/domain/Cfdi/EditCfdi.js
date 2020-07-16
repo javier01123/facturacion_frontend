@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import PartidaEdit from "./PartidaEdit";
 import * as renderers from "../../utilities/columnRederers";
+import { Link } from "react-router-dom";
 import {
   Form,
   DatePicker,
@@ -33,6 +34,7 @@ import {
   PlusCircleTwoTone,
   DeleteTwoTone,
   ExclamationCircleOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -250,17 +252,18 @@ export default function EditCfdi() {
         initialValues={initialValues}
         onFinish={onFinishHandler}
       >
-        <div className="row">
-          <Button type="default" size="middle" icon={<SaveOutlined />}>
-            Regresar
+        <div>
+          <Button type="default" size="middle" icon={<ArrowLeftOutlined />}>
+            <Link to="/cfdi"> Regresar</Link>
           </Button>
+
           <Button
             type="primary"
             htmlType="submit"
             size="middle"
             icon={<SaveOutlined />}
             disabled={isSubmiting}
-            style={{ float: "right", marginBottom: "5px" }}
+            style={{ margin: "5px 5px" }}
           >
             Guardar
           </Button>
@@ -374,9 +377,13 @@ export default function EditCfdi() {
                     required: true,
                     message: "obligatorio",
                   },
+                  {
+                    type: "integer",
+                    message: "debe ser un entero",
+                  },
                 ]}
               >
-                <InputNumber />
+                <InputNumber min={0} max={100} />
               </Form.Item>
             </div>
           </div>

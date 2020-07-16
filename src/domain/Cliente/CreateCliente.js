@@ -4,10 +4,11 @@ import ClienteRepository from "./ClienteRepository";
 import ValidationErrors from "../../components/ErrorScreens/ValidationErrors/ValidationErrors";
 import { v4 as uuidv4 } from "uuid";
 import { Form, Input, Button, Card, Row, Col } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { SaveOutlined,ArrowLeftOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import * as patterns from "../../utilities/regexPatterns";
 import { useToasts } from "react-toast-notifications";
+import { Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -39,8 +40,7 @@ export default function CreateCliente() {
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const clienteRepository = new ClienteRepository();
   const { addToast } = useToasts();
-  // const abortController = new AbortController();
-  // const abortSignal = abortController.signal;
+ 
 
   const onFinish = (values) => {
     const clienteToPost = {
@@ -70,14 +70,7 @@ export default function CreateCliente() {
         if (clienteCreated === true) history.push("/clientes");
       });
   };
-
-  // const cancelSubscriptions = () => {
-  //   clienteRepository.abortAll();
-  // };
-
-  // useEffect(() => {
-  //   return cancelSubscriptions;
-  // }, []);
+ 
   return (
     <Form
       {...layout}
@@ -86,6 +79,22 @@ export default function CreateCliente() {
       initialValues={initialValues}
       onFinish={onFinish}
     >
+      <div>
+       <Button type="default" size="middle" icon={<ArrowLeftOutlined />}>
+            <Link to="/clientes"> Regresar</Link>
+          </Button>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="middle"
+            icon={<SaveOutlined />}
+            disabled={isSubmiting}
+            style={{ margin: "5px 5px" }}
+          >
+            Registrar Cliente
+          </Button>
+        </div>
       <Card
         style={{ backgroundColor: "white" }}
         title="Datos fiscales"
@@ -183,19 +192,7 @@ export default function CreateCliente() {
         <ValidationErrors validationErrors={validationErrors} />
       ) : null}
 
-      <Card>
-        <Form.Item {...tailLayout}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="middle"
-            icon={<SaveOutlined />}
-            disabled={isSubmiting}
-          >
-            Registrar Cliente
-          </Button>
-        </Form.Item>
-      </Card>
+  
     </Form>
   );
 }
