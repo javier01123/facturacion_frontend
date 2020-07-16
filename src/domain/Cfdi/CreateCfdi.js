@@ -44,7 +44,13 @@ export default function CreateCfdi() {
   const [clienteId, setClienteId] = useState();
 
   let history = useHistory();
-  const initialValues = { serie: "F", fechaEmision: moment() };
+  const offset = moment().utcOffset();
+  let fecha = moment().utc().add(offset, "minute");
+
+  const initialValues = {
+    serie: "F",
+    fechaEmision: fecha,
+  };
   const empresaActualId = useSelector((state) => state.empresaActualId);
   const sucursalActualId = useSelector((state) => state.sucursalActualId);
   const cfdiRepository = new CfdiRepository();
@@ -94,7 +100,7 @@ export default function CreateCfdi() {
     cfdiRepository
       .createCfdi(cfdiToPost)
       .then((response) => {
-        cfdiCreated=true;
+        cfdiCreated = true;
       })
       .catch((error) => {
         if (error.isValidationError === true) {
@@ -109,8 +115,18 @@ export default function CreateCfdi() {
       });
   };
 
+  const valuesChangedHandler = (formValues) => console.log({ formValues });
+
+  const onDateChange = (momentObj, dateString) => {
+    if (!momentObj) return;
+
+    const offset = momentObj.utcOffset();
+    momentObj = momentObj.utc().add(offset, "minute");
+  };
+
   return (
     <Form
+      onValuesChange={valuesChangedHandler}
       form={form}
       {...layout}
       name="basic"
@@ -158,6 +174,7 @@ export default function CreateCfdi() {
           ]}
         >
           <DatePicker
+            onChange={onDateChange}
             showTime={{ format: "HH:mm" }}
             format="DD-MM-YYYY HH:mm"
           />

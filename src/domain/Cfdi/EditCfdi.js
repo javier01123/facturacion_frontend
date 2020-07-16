@@ -63,7 +63,10 @@ export default function EditCfdi() {
     try {
       const cfdi = await cfdiRepository.getCfdiById(cfdiId);
       const empresa = await empresaRepository.getEmpresaById(empresaActualId);
-      cfdi.fechaEmision = moment(cfdi.fechaEmision);
+
+      const offset = moment(cfdi.fechaEmision).utcOffset();
+      cfdi.fechaEmision = moment(cfdi.fechaEmision).utc().add(offset, "minute");
+
       cfdi.partidas = cfdi.partidas.map((p) => {
         return { ...p, key: p.id };
       });
@@ -92,6 +95,12 @@ export default function EditCfdi() {
 
   const onSelect = (val, option) => {
     setCfdiState({ ...cfdiState, clienteId: option.key });
+  };
+
+  const onDateChange = (momentObj, dateString) => {
+    if (!momentObj) return;
+    const offset = momentObj.utcOffset();
+    momentObj = momentObj.utc().add(offset, "minute");
   };
 
   if (isLoading) {
@@ -318,6 +327,7 @@ export default function EditCfdi() {
                 <DatePicker
                   showTime={{ format: "HH:mm" }}
                   format="DD-MM-YYYY HH:mm"
+                  onChange={onDateChange}
                 />
               </Form.Item>
             </div>

@@ -2,7 +2,6 @@ import axios_instance from "../../services/httpClient/axios_instance";
 
 export default class ClienteRepository {
   constructor() {
-    console.log({axios_instance});
     this.source = axios_instance.CancelToken.source();
   }
 
