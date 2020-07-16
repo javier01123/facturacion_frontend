@@ -15,9 +15,9 @@ import PartidaEdit from "./PartidaEdit";
 import * as renderers from "../../utilities/columnRederers";
 import {
   Form,
-  AutoComplete,
   DatePicker,
   Input,
+  InputNumber,
   Table,
   Button,
   Card,
@@ -25,6 +25,7 @@ import {
   Modal,
   Space,
   Select,
+  Typography,
 } from "antd";
 import {
   SaveOutlined,
@@ -34,9 +35,9 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
-const { Option } = AutoComplete;
+const { Option } = Select;
 const { confirm } = Modal;
-// const { SelectOption } = Select;
+const { Text } = Typography;
 
 export default function EditCfdi() {
   const [cfdiState, setCfdiState] = useState({});
@@ -249,7 +250,23 @@ export default function EditCfdi() {
         initialValues={initialValues}
         onFinish={onFinishHandler}
       >
-        <Card type="inner" bordered={true}>
+        <div className="row">
+          <Button type="default" size="middle" icon={<SaveOutlined />}>
+            Regresar
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="middle"
+            icon={<SaveOutlined />}
+            disabled={isSubmiting}
+            style={{ float: "right", marginBottom: "5px" }}
+          >
+            Guardar
+          </Button>
+        </div>
+
+        <Card type="inner" bordered={true} title="CFDI">
           <Form.Item name="id" style={{ display: "none" }}>
             <Input type="hidden" />
           </Form.Item>
@@ -257,20 +274,6 @@ export default function EditCfdi() {
           <Form.Item name="clienteId" style={{ display: "none" }}>
             <Input type="hidden" />
           </Form.Item>
-
-          <div className="row">
-            <div>
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="middle"
-                icon={<SaveOutlined />}
-                disabled={isSubmiting}
-              >
-                Guardar Cambios
-              </Button>
-            </div>
-          </div>
 
           <div className="row">
             <div className="column">
@@ -303,18 +306,6 @@ export default function EditCfdi() {
                   },
                 ]}
               >
-                {/* <AutoComplete
-                  onSearch={handleSearch}
-                  onSelect={(val, option) => onSelect(val, option)}
-                  placeholder="Seleccione el cliente"
-                >
-                  {searchClienteResult &&
-                    searchClienteResult.map((cliente) => (
-                      <Option key={cliente.id} value={cliente.razonSocial}>
-                        {cliente.razonSocial}
-                      </Option>
-                    ))}
-                </AutoComplete> */}
                 <Select
                   allowClear
                   showSearch
@@ -373,9 +364,34 @@ export default function EditCfdi() {
                 </Select>
               </Form.Item>
             </div>
-            <div className="column"></div>
+            <div className="column">
+              <Form.Item
+                label="Tasa IVA"
+                name="tasaIva"
+                labelCol={{ span: 7 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "obligatorio",
+                  },
+                ]}
+              >
+                <InputNumber />
+              </Form.Item>
+            </div>
           </div>
 
+          <Button
+            type="primary"
+            htmlType="button"
+            onClick={showAgregarPartidaHandler}
+            style={{ float: "right", marginBottom: "5px" }}
+            icon={<PlusCircleTwoTone />}
+          >
+            Agregar Partida
+          </Button>
+
+          <br />
           <Table
             size="small"
             rowClassName={() => "editable-row"}
@@ -384,16 +400,49 @@ export default function EditCfdi() {
             columns={columns}
             pagination={false}
             showSorterTooltip={false}
+            summary={(pageData) => {
+              console.log({ pageData });
+
+              let subtotal = 0;
+              let iva = 0;
+              let total = 0;
+
+              pageData.forEach(({ importe }) => {
+                subtotal += importe;
+              });
+
+              return (
+                <>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell>Subtotal</Table.Summary.Cell>
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell>
+                      <Text>{cfdiState.subtotal}</Text>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell>IVA</Table.Summary.Cell>
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell>
+                      <Text>{cfdiState.iva}</Text>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell>Total</Table.Summary.Cell>
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell>
+                      <Text>
+                        <strong>{cfdiState.total}</strong>
+                      </Text>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                </>
+              );
+            }}
           />
-          <Button
-            type="primary"
-            htmlType="button"
-            onClick={showAgregarPartidaHandler}
-            style={{ float: "right" }}
-            icon={<PlusCircleTwoTone />}
-          >
-            Agregar Partida
-          </Button>
         </Card>
 
         {validationErrors ? (
@@ -408,7 +457,7 @@ export default function EditCfdi() {
         onCancel={cancelPartidaFormHandler}
         footer={[
           <Button key="cancel" onClick={cancelPartidaFormHandler}>
-            Cancel
+            Cancelar
           </Button>,
           <Button
             form="partidaform"
@@ -417,7 +466,7 @@ export default function EditCfdi() {
             htmlType="submit"
             loading={isSubmiting}
           >
-            Submit
+            Guardar
           </Button>,
         ]}
       >
