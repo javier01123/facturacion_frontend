@@ -91,6 +91,7 @@ export default function CreateCfdi() {
       .createCfdi(cfdiToPost)
       .then((response) => {
         cfdiCreated = true;
+        addToast("CFDI creado", { appearance: "success", autoDismiss: true });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

@@ -18,7 +18,7 @@ const layout = {
     span: 19,
   },
   layout: "horizontal",
-}; 
+};
 
 export default function EditCliente() {
   const [clienteState, setClienteState] = useState({});
@@ -63,8 +63,11 @@ export default function EditCliente() {
 
     clienteRepository
       .updateCliente(clienteToPost)
-      .then((response) => {
-        history.push("/clientes");
+      .then((response) => {       
+        addToast("cambios guardados", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

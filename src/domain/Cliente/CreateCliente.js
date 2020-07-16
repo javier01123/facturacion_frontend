@@ -57,6 +57,10 @@ export default function CreateCliente() {
       .createCliente(clienteToPost)
       .then((response) => {
         clienteCreated = true;
+        addToast("Cliente registrado", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

@@ -132,7 +132,10 @@ export default function EditCfdi() {
       .then(async (response) => {
         await loadData();
         setModalPartidaVisible(false);
-        message.success("cambios guardados", 0.8);
+        addToast("cambios guardados", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

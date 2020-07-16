@@ -68,8 +68,11 @@ export default function EditSucursal() {
 
     sucursalRepository
       .updateSucursal(sucursalToPost)
-      .then((response) => {
-        history.push("/sucursales");
+      .then((response) => {  
+        addToast("cambios guardados", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

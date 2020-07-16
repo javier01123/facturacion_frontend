@@ -46,6 +46,10 @@ const CreateEmpresa = () => {
       .createEmpresa(empresaToPost)
       .then((response) => {
         empresaCreated = true;
+        addToast("Empresa registrada", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

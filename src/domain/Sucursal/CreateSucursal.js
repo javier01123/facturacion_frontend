@@ -48,6 +48,10 @@ export default function CreateSucursal() {
       .createSucursal(sucursalToPost)
       .then((response) => {
         sucursalCreated = true;
+        addToast("Sucursal registrada", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {

@@ -70,7 +70,11 @@ export default function EditEmpresa() {
     empresaRepository
       .updateEmpresa(empresaToUpdate)
       .then((response) => {
-        history.push("/empresas");
+        // history.push("/empresas");
+        addToast("cambios guardados", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       })
       .catch((error) => {
         if (error.isValidationError === true) {
