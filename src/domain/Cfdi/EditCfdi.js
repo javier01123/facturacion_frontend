@@ -58,6 +58,7 @@ export default function EditCfdi() {
   const cfdiRepository = new CfdiRepository();
   const clienteRepository = new ClienteRepository();
   const empresaRepository = new EmpresaRepository();
+  const [form] = Form.useForm();
 
   const loadData = async () => {
     try {
@@ -94,7 +95,7 @@ export default function EditCfdi() {
   };
 
   const onSelect = (val, option) => {
-    setCfdiState({ ...cfdiState, clienteId: option.key });
+    form.setFieldsValue({ clienteId: option.key });
   };
 
   const onDateChange = (momentObj, dateString) => {
@@ -118,7 +119,6 @@ export default function EditCfdi() {
 
     const cfdiToPost = {
       ...values,
-      clienteId: cfdiState.clienteId,
       partidas: cfdiState.partidas,
     };
 
@@ -243,6 +243,7 @@ export default function EditCfdi() {
   return (
     <React.Fragment>
       <Form
+        form={form}
         name="basic"
         size="small"
         initialValues={initialValues}
@@ -250,6 +251,10 @@ export default function EditCfdi() {
       >
         <Card type="inner" bordered={true}>
           <Form.Item name="id" style={{ display: "none" }}>
+            <Input type="hidden" />
+          </Form.Item>
+
+          <Form.Item name="clienteId" style={{ display: "none" }}>
             <Input type="hidden" />
           </Form.Item>
 
@@ -298,7 +303,7 @@ export default function EditCfdi() {
                   },
                 ]}
               >
-                <AutoComplete
+                {/* <AutoComplete
                   onSearch={handleSearch}
                   onSelect={(val, option) => onSelect(val, option)}
                   placeholder="Seleccione el cliente"
@@ -309,7 +314,21 @@ export default function EditCfdi() {
                         {cliente.razonSocial}
                       </Option>
                     ))}
-                </AutoComplete>
+                </AutoComplete> */}
+                <Select
+                  allowClear
+                  showSearch
+                  onSearch={handleSearch}
+                  onSelect={(val, option) => onSelect(val, option)}
+                  placeholder="Busque el cliente"
+                >
+                  {searchClienteResult &&
+                    searchClienteResult.map((cliente) => (
+                      <Option key={cliente.id} value={cliente.id}>
+                        {cliente.razonSocial}
+                      </Option>
+                    ))}
+                </Select>
               </Form.Item>
             </div>
             <div className="column">

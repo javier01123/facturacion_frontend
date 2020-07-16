@@ -11,6 +11,7 @@ import moment from "moment";
 import {
   Form,
   AutoComplete,
+  Select,
   DatePicker,
   Input,
   InputNumber,
@@ -35,13 +36,13 @@ const tailLayout = {
   },
 };
 
-const { Option } = AutoComplete;
+const { Option } = Select;
 
 export default function CreateCfdi() {
   const [validationErrors, setValidationErrors] = useState(null);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [result, setResult] = useState([]);
-  const [clienteId, setClienteId] = useState();
+  // const [clienteId, setClienteId] = useState();
 
   let history = useHistory();
   const offset = moment().utcOffset();
@@ -82,15 +83,14 @@ export default function CreateCfdi() {
     setResult(results);
   };
 
-  const onSelect = (val, option) => {
-    setClienteId(option.key);
-  };
+  // const onSelect = (val, option) => {
+  //   setClienteId(option.key);
+  // };
 
   const onFinish = (values) => {
     const cfdiToPost = {
       ...values,
       Id: uuidv4(),
-      clienteId: clienteId,
       sucursalId: sucursalActualId,
     };
 
@@ -141,7 +141,7 @@ export default function CreateCfdi() {
       >
         <Form.Item
           label="Cliente"
-          name="razonSocialCliente"
+          name="clienteId"
           rules={[
             {
               required: true,
@@ -150,17 +150,31 @@ export default function CreateCfdi() {
             },
           ]}
         >
-          <AutoComplete
+          {/* <AutoComplete
             onSearch={handleSearch}
             onSelect={(val, option) => onSelect(val, option)}
             placeholder="Busque el cliente"
+            allowClear
           >
             {result.map((cliente) => (
               <Option key={cliente.id} value={cliente.razonSocial}>
                 {cliente.razonSocial}
               </Option>
             ))}
-          </AutoComplete>
+          </AutoComplete> */}
+
+          <Select
+            allowClear
+            showSearch
+            onSearch={handleSearch}          
+            placeholder="Busque el cliente"
+          >
+            {result.map((cliente) => (
+              <Option key={cliente.id} value={cliente.id}>
+                {cliente.razonSocial}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item

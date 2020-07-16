@@ -1,8 +1,12 @@
 import React from "react";
-import { Layout, Menu,  Select } from "antd";
+import { Layout, Menu, Select } from "antd";
 import { Route, Switch } from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import ErrorBoundary from "../../components/ErrorHandlers/ErrorBoundary/ErrorBoundary";
+import { useDispatch, useSelector } from "react-redux";
+import * as actionCreators from "../../store/actionCreators";
+import axios_instance from "../../services/httpClient/axios_instance";
+
 import CatalogoEmpresas from "../../domain/Empresa/CatalogoEmpresas";
 import CreateEmpresa from "../../domain/Empresa/CreateEmpresa";
 import EditEmpresa from "../../domain/Empresa/EditEmpresa";
@@ -15,12 +19,11 @@ import CatalogoClientes from "../../domain/Cliente/CatalogoClientes";
 import CreateCliente from "../../domain/Cliente/CreateCliente";
 import EditCliente from "../../domain/Cliente/EditCliente";
 
-import { useDispatch, useSelector } from "react-redux";
-import * as actionCreators from "../../store/actionCreators";
-import axios_instance from "../../services/httpClient/axios_instance";
 import CatalogoCfdi from "../../domain/Cfdi/CatalogoCfdi";
 import CreateCfdi from "../../domain/Cfdi/CreateCfdi";
 import EditCfdi from "../../domain/Cfdi/EditCfdi";
+
+import Inicio from "../../domain/Inicio/Inicio";
 
 const { Option } = Select;
 const { Header, Content, Footer } = Layout;
@@ -54,7 +57,7 @@ const Home = () => {
       <Header>
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1">
-            <Link to="/">Home</Link>
+            <Link to="/">Inicio</Link>
           </Menu.Item>
           <Menu.Item key="2">
             <Link to="/empresas">Empresas</Link>
@@ -117,10 +120,11 @@ const Home = () => {
         </Menu>
       </Header>
       <Content style={{ padding: "0 50px" }}>
-         <br/>
+        <br />
         <div className="site-layout-content">
           <ErrorBoundary>
             <Switch>
+              <Route exact path="/inicio" />
               <Route exact path="/empresas" component={CatalogoEmpresas} />
               <Route path="/empresas/edit/:id" component={EditEmpresa} />
               <Route path="/empresas/create" component={CreateEmpresa} />
@@ -134,9 +138,7 @@ const Home = () => {
               <Route exact path="/cfdi/create" component={CreateCfdi} />
               <Route path="/cfdi/edit/:id" component={EditCfdi} />
 
-              <Route exact path="/">
-                <div>Home</div>
-              </Route>
+              <Route exact path="/" component={Inicio} />
 
               <Route path="/">
                 <div>404 - Página no encontrada</div>
