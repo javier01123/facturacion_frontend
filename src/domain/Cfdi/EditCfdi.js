@@ -424,25 +424,25 @@ export default function EditCfdi() {
               return (
                 <>
                   <Table.Summary.Row>
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell />
                     <Table.Summary.Cell>Subtotal</Table.Summary.Cell>
-                    <Table.Summary.Cell />
-                    <Table.Summary.Cell />
                     <Table.Summary.Cell>
                       <Text>{cfdiState.subtotal}</Text>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>
                   <Table.Summary.Row>
+                    <Table.Summary.Cell />
+                    <Table.Summary.Cell />
                     <Table.Summary.Cell>IVA</Table.Summary.Cell>
-                    <Table.Summary.Cell />
-                    <Table.Summary.Cell />
                     <Table.Summary.Cell>
                       <Text>{cfdiState.iva}</Text>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>
                   <Table.Summary.Row>
+                    <Table.Summary.Cell></Table.Summary.Cell>
+                    <Table.Summary.Cell />
                     <Table.Summary.Cell>Total</Table.Summary.Cell>
-                    <Table.Summary.Cell />
-                    <Table.Summary.Cell />
                     <Table.Summary.Cell>
                       <Text>
                         <strong>{cfdiState.total}</strong>
