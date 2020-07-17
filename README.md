@@ -1,6 +1,10 @@
 
 Hospedado para demostración  en [Facturación fontend](https://facturacion-frontend-dev.herokuapp.com/).
 
+Back-end se mantiene por separado en [github repository](https://github.com/javier01123/facturacion_backend)
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
