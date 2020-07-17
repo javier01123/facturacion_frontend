@@ -9,9 +9,6 @@ const PartidaEdit = (props) => {
   });
 
   const valuesChangedHandler = (formValues) => {
-    //  console.log({formValues});
-    // formValues.importe = formValues.cantidad * formValues.valorUnitario;
-    // form.setFieldsValue(formValues);
     const values = form.getFieldsValue();
 
     if (values.cantidad && values.valorUnitario) {

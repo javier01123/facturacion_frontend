@@ -107,6 +107,24 @@ export default function EditCfdi() {
     momentObj = momentObj.utc().add(offset, "minute");
   };
 
+  const recalcularMontos = (state) => {
+    console.log({ cfdiState });
+
+    const formValues = form.getFieldsValue();
+    let subtotal = 0;
+    const tasaIva = (formValues.tasaIva/100);
+
+    state.partidas.forEach(({ importe }) => {
+      subtotal += importe;
+    });
+
+    let newState = { ...state };
+    newState.subtotal = subtotal;
+    newState.iva = subtotal * tasaIva;
+    newState.total = newState.iva + subtotal;
+    setCfdiState(newState);
+  };
+
   if (isLoading) {
     return <CustomSpinner />;
   }
@@ -216,8 +234,10 @@ export default function EditCfdi() {
       const id = uuidv4();
       let newState = { ...cfdiState, partidas: [...cfdiState.partidas] };
       newState.partidas.push({ ...formValues, id: id, key: id });
-      setCfdiState(newState);
+      console.log({ newState });
+      // setCfdiState(newState);
       setModalPartidaVisible(false);
+      recalcularMontos(newState);
     } else {
       let newState = { ...cfdiState };
       let partida = newState.partidas.find((p) => p.id === formValues.id);
@@ -225,8 +245,9 @@ export default function EditCfdi() {
       partida.valorUnitario = formValues.valorUnitario;
       partida.descripcion = formValues.descripcion;
       partida.importe = formValues.importe;
-      setCfdiState(newState);
+      // setCfdiState(newState);
       setModalPartidaVisible(false);
+      recalcularMontos(newState);
     }
   };
 
@@ -265,7 +286,7 @@ export default function EditCfdi() {
             htmlType="submit"
             size="middle"
             icon={<SaveOutlined />}
-            disabled={isSubmiting}
+            loading={isSubmiting}
             style={{ margin: "5px 5px" }}
           >
             Guardar
@@ -411,16 +432,6 @@ export default function EditCfdi() {
             pagination={false}
             showSorterTooltip={false}
             summary={(pageData) => {
-              console.log({ pageData });
-
-              let subtotal = 0;
-              let iva = 0;
-              let total = 0;
-
-              pageData.forEach(({ importe }) => {
-                subtotal += importe;
-              });
-
               return (
                 <>
                   <Table.Summary.Row>

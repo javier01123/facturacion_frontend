@@ -76,7 +76,7 @@ const PantallaLogin = () => {
               type="primary full-width"
               htmlType="submit"
               className="login-form-button"
-              disabled={isSubmitting}
+              loading={isSubmitting}
             >
               Login
             </Button>

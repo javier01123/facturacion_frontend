@@ -103,7 +103,7 @@ export default function EditEmpresa() {
           htmlType="submit"
           size="middle"
           icon={<SaveOutlined />}
-          disabled={isSubmiting}
+          loading={isSubmiting}
           style={{ margin: "5px 5px" }}
         >
           Guardar

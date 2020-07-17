@@ -84,7 +84,7 @@ export default function CreateSucursal() {
           htmlType="submit"
           size="middle"
           icon={<SaveOutlined />}
-          disabled={isSubmiting}
+          loading={isSubmiting}
           style={{ margin: "5px 5px" }}
         >
           Registrar Sucursal
