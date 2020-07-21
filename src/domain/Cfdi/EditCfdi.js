@@ -22,7 +22,6 @@ import {
   Table,
   Button,
   Card,
-  message,
   Modal,
   Space,
   Select,
@@ -77,7 +76,6 @@ export default function EditCfdi() {
       setCfdiState(cfdi);
       setEmpresa(empresa);
     } catch (ex) {
-      console.log(ex);
       setNetworkError(ex);
     } finally {
       setIsLoading(false);
@@ -108,11 +106,9 @@ export default function EditCfdi() {
   };
 
   const recalcularMontos = (state) => {
-    console.log({ cfdiState });
-
     const formValues = form.getFieldsValue();
+    const tasaIva = formValues.tasaIva / 100;
     let subtotal = 0;
-    const tasaIva = (formValues.tasaIva/100);
 
     state.partidas.forEach(({ importe }) => {
       subtotal += importe;
@@ -136,8 +132,6 @@ export default function EditCfdi() {
   const initialValues = cfdiState;
 
   const onFinishHandler = (values) => {
-    console.log({ values });
-
     const cfdiToPost = {
       ...values,
       partidas: cfdiState.partidas,
@@ -229,25 +223,30 @@ export default function EditCfdi() {
     },
   ];
 
+  const addNewPartida = (formValues) => {
+    const id = uuidv4();
+    let newState = { ...cfdiState, partidas: [...cfdiState.partidas] };
+    newState.partidas.push({ ...formValues, id: id, key: id });
+    setModalPartidaVisible(false);
+    recalcularMontos(newState);
+  };
+
+  const updatePartida = (formValues) => {
+    let newState = { ...cfdiState };
+    let partida = newState.partidas.find((p) => p.id === formValues.id);
+    partida.cantidad = formValues.cantidad;
+    partida.valorUnitario = formValues.valorUnitario;
+    partida.descripcion = formValues.descripcion;
+    partida.importe = formValues.importe;
+    setModalPartidaVisible(false);
+    recalcularMontos(newState);
+  };
+
   const submitPartidaFormHandler = (formValues) => {
     if (isPartidaNueva === true) {
-      const id = uuidv4();
-      let newState = { ...cfdiState, partidas: [...cfdiState.partidas] };
-      newState.partidas.push({ ...formValues, id: id, key: id });
-      console.log({ newState });
-      // setCfdiState(newState);
-      setModalPartidaVisible(false);
-      recalcularMontos(newState);
+      addNewPartida(formValues);
     } else {
-      let newState = { ...cfdiState };
-      let partida = newState.partidas.find((p) => p.id === formValues.id);
-      partida.cantidad = formValues.cantidad;
-      partida.valorUnitario = formValues.valorUnitario;
-      partida.descripcion = formValues.descripcion;
-      partida.importe = formValues.importe;
-      // setCfdiState(newState);
-      setModalPartidaVisible(false);
-      recalcularMontos(newState);
+      updatePartida(formValues);
     }
   };
 
