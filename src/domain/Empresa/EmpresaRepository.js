@@ -1,6 +1,5 @@
 import axios_instance from "../../services/httpClient/axios_instance";
 
-
 export default class EmpresaRepository {
   getEmpresaById(empresaId) {
     return new Promise((resolve, reject) => {
@@ -62,8 +61,8 @@ export default class EmpresaRepository {
     });
   }
 
-  isRfcDisponible(rfc){
-    return new Promise((resolve,reject)=>{
+  isRfcDisponible(rfc) {
+    return new Promise((resolve, reject) => {
       axios_instance
         .get(`/empresas/isRfcDisponible/${rfc}`)
         .then((response) => {
@@ -74,6 +73,4 @@ export default class EmpresaRepository {
         });
     });
   }
-
- 
 }
