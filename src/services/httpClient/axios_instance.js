@@ -7,6 +7,12 @@ const instance = axios.create({
   withCredentials: true,
 });
 
+console.log('agregando token');
+
+let bearerToken = localStorage.getItem('access_token');
+instance.defaults.headers.common = {'Authorization':  bearerToken}
+
+
 instance.CancelToken= axios.CancelToken;
 instance.isCancel = axios.isCancel;
 
@@ -37,5 +43,6 @@ instance.interceptors.response.use(
     return Promise.reject(formattedError);
   }
 );
+ 
 
 export default instance;

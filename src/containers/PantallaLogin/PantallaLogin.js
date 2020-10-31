@@ -19,7 +19,8 @@ const PantallaLogin = () => {
         Email: values.email,
         Password: values.password,
       })
-      .then((response) => {
+      .then((response) => {        
+        localStorage.setItem('access_token', response.data.token);
         dispatch(actions.loginInit());
       })
       .catch((err) => {
